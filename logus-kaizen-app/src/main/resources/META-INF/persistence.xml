@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="Kaizen_Persistence_Unit">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+		<!-- Conversores -->
+		<class>com.logus.core.model.persistence.jpa.BooleanToIntegerConverter</class>
+		<class>com.logus.core.model.persistence.jpa.LocalTimeToTimeConverter</class>
+		<class>com.logus.core.model.persistence.jpa.LocalDateToDateConverter</class>
+
+		<!-- Apoio -->
+		<class>com.logus.kaizen.model.apoio.ambiente.Ambiente</class>
+		<class>com.logus.kaizen.model.apoio.atendimento.Atendimento</class>
+		<class>com.logus.kaizen.model.apoio.biblioteca.Biblioteca</class>
+		<class>com.logus.kaizen.model.apoio.cliente.Cliente</class>
+		<class>com.logus.kaizen.model.plano.Plano</class>
+		<class>com.logus.kaizen.model.plano.Liberacao</class>
+		<class>com.logus.kaizen.model.processo.Processo</class>
+		<class>com.logus.kaizen.model.processo.Passo</class>
+		<class>com.logus.kaizen.model.apoio.produto.Produto</class>
+		<class>com.logus.kaizen.model.projeto.Projeto</class>
+		<class>com.logus.kaizen.model.projeto.Papel</class>
+		<class>com.logus.kaizen.model.resolucao.Resolucao</class>
+		<class>com.logus.kaizen.model.solicitacao.Solicitacao</class>
+		<class>com.logus.kaizen.model.solicitacao.ItemSolicitacao</class>
+		<class>com.logus.kaizen.model.apoio.tipomondai.TipoMondai</class>
+		<class>com.logus.kaizen.model.apoio.tipomondai.TipoMondaiProjeto</class>
+		<class>com.logus.kaizen.model.transicao.Transicao</class>
+		<class>com.logus.kaizen.model.apoio.urgencia.Urgencia</class>
+		<!-- Exemplo Catalyst -->
+		<class>com.logus.kaizen.model.centrocusto.CentroCusto</class>
+		<class>com.logus.kaizen.model.matrizrateio.MatrizRateio</class>
+		<class>com.logus.kaizen.model.matrizrateio.ItemRateio</class>
+
+
+		<properties>
+
+			<!-- Postgresql desenvolvimento -->
+			<property name="javax.persistence.jdbc.driver"
+				value="org.postgresql.Driver" />
+			<property name="javax.persistence.jdbc.url"
+				value="${app.controle-deploys.database}" />
+			<property name="javax.persistence.jdbc.user"
+				value="${app.controle-deploys.username}" />
+			<property name="javax.persistence.jdbc.password"
+				value="${app.controle-deploys.password}" />
+
+
+			<!-- Eclipselink -->
+			<property name="eclipselink.ddl-generation"
+				value="create-or-extend-tables" />
+			<property name="eclipselink.create-ddl-jdbc-file-name"
+				value="createDDL_ddlGeneration.jdbc" />
+			<property name="eclipselink.drop-ddl-jdbc-file-name"
+				value="dropDDL_ddlGeneration.jdbc" />
+			<property name="eclipselink.ddl-generation.output-mode"
+				value="both" />
+		</properties>
+	</persistence-unit>
+</persistence>

@@ -1,0 +1,4 @@
+/target/
+/.classpath
+/createDDL_ddlGeneration.jdbc
+/pom.xml
