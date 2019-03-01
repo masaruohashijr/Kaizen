@@ -78,7 +78,6 @@ public class ProcessoForm extends BeanForm<Processo> {
 
 			@Override
 			protected Object getArtigoEntidade() {
-				// TODO Auto-generated method stub
 				return TM.translate(CoreTranslator.ART_MAS_SING);
 			}
 
@@ -89,7 +88,6 @@ public class ProcessoForm extends BeanForm<Processo> {
 
 			@Override
 			protected String getNomeEntidadePlural() {
-				// TODO Auto-generated method stub
 				return TM.translate(KaizenTranslator.PROCESSO_PASSO_PLURAL);
 			}
 
@@ -103,6 +101,7 @@ public class ProcessoForm extends BeanForm<Processo> {
 			}
 		};
 		passosEditor.setSizeFull();
+		passosEditor.getElement().removeChild(0);
 		passosEditor.updateObjects(getObject().getPassos());
 		return passosEditor;
 

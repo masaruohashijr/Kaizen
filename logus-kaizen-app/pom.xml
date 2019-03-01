@@ -1,0 +1,256 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>com.logus.kaizen</groupId>
+		<artifactId>kaizen</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>logus-kaizen-app</artifactId>
+	<packaging>war</packaging>
+
+	<name>vaadin-10-crud-jpa</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+
+		<!-- log4j -->
+		<app.log.level>INFO</app.log.level>
+		<log4j.root.logger>${app.log.level}, CONSOLE, LOGFILE</log4j.root.logger>
+		<log4j.log.console>
+		</log4j.log.console>
+		<log4j.path>/tmp/logs/controle-deploys</log4j.path>
+		<log4j.logfile.path>${log4j.path}/${build.finalName}.log</log4j.logfile.path>
+		<log.cache.level>INFO</log.cache.level>
+		<vaadin.version>12.0.0</vaadin.version>
+		<jetty.version>9.4.12.v20180830</jetty.version>
+		<tomcat.version>7.0.59</tomcat.version>
+	</properties>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>vaadin-prereleases</id>
+			<url>https://maven.vaadin.com/vaadin-prereleases</url>
+		</pluginRepository>
+	</pluginRepositories>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-bom</artifactId>
+				<type>pom</type>
+				<scope>import</scope>
+				<version>${vaadin.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<!--=================================== -->
+		<!-- Dependências logus -->
+		<!--=================================== -->
+
+		<dependency>
+			<groupId>com.logus.catalyst</groupId>
+			<artifactId>logus-core-view</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.logus.kaizen</groupId>
+			<artifactId>logus-kaizen-model</artifactId>
+			<version>${version}</version>
+		</dependency>
+		<!-- <dependency> <groupId>javax.servlet</groupId> <artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version> <scope>provided</scope> </dependency> -->
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.common</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.oltu.oauth2</groupId>
+			<artifactId>org.apache.oltu.oauth2.client</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client</artifactId>
+			<version>1.19.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-sheets -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-sheets</artifactId>
+			<version>v4-rev15-1.18.0-rc</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.19.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-drive -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-drive</artifactId>
+			<version>v3-rev36-1.22.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+ 					<jettyXml>jetty.xml,jetty-http.xml</jettyXml>
+<!--  					<jettyXml>jetty.xml,jetty-http.xml,jetty-ssl.xml,jetty-https.xml</jettyXml>  -->
+					<systemProperties>
+						<systemProperty>
+							<name>log4j.configuration</name>
+							<value>properties/log4j.properties</value>
+						</systemProperty>
+					</systemProperties>
+				</configuration>
+				<dependencies>
+					<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+					<dependency>
+						<groupId>log4j</groupId>
+						<artifactId>log4j</artifactId>
+						<version>1.2.17</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.3.2</version>
+				<configuration>
+					<mainClass>gr.grnet.minopenid.client.TestClient</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- Profile para deploy em produção. Deve ser combinado com o profile
+			específico do ambiente para o qual se deseja o deploy. -->
+		<profile>
+			<id>productionMode</id>
+			<activation>
+				<property>
+					<name>vaadin.productionMode</name>
+				</property>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.vaadin</groupId>
+					<artifactId>flow-server-production-mode</artifactId>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.vaadin</groupId>
+						<artifactId>vaadin-maven-plugin</artifactId>
+						<version>${vaadin.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>copy-production-files</goal>
+									<goal>package-for-production</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- Profile para testes em ambiente local -->
+		<profile>
+			<id>teste_local</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<!-- WAR Name -->
+				<project.build.finalName>ControleDeploysApp</project.build.finalName>
+
+				<app.controle-deploys.driverClassName>org.postgresql.Driver</app.controle-deploys.driverClassName>
+				<app.controle-deploys.database>jdbc:postgresql://127.0.0.1:5432/kaizen</app.controle-deploys.database>
+				<app.controle-deploys.username>logus</app.controle-deploys.username>
+				<app.controle-deploys.password>logus</app.controle-deploys.password>
+				<app.controle-deploys.schema>kaizen</app.controle-deploys.schema>
+
+				<app.sec.driverClassName>org.postgresql.Driver</app.sec.driverClassName>
+				<app.sec.database>jdbc:postgresql://127.0.0.1:5432/divida</app.sec.database>
+				<app.sec.username>logus</app.sec.username>
+				<app.sec.password>logus</app.sec.password>
+				<app.sec.schema>security</app.sec.schema>
+
+				<login.username>masaru</login.username>
+				<login.password>senha123</login.password>
+
+				<cache.cluster.name>LOGUS_CACHE_CLUSTER</cache.cluster.name>
+				<cache.name>Kaizen</cache.name>
+				<!-- ====================================================================== -->
+
+			</properties>
+		</profile>
+	</profiles>
+
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
