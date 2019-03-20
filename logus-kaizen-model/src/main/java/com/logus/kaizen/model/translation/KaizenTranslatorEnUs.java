@@ -65,7 +65,7 @@ public class KaizenTranslatorEnUs extends AbstractMapTranslator {
 	public static final String CLIENTE_TAMANHO_NOME = "CLIENTE_TAMANHO_NOME";
 	public static final String CLIENTE_PLURAL = "CLIENTE_PLURAL";
 
-	// Produto
+	// Funcao
 	public static final String PRODUTO_NOME_OBRIGATORIO = "PRODUTO_NOME_OBRIGATORIO";
 	public static final String PRODUTO_TAMANHO_NOME = "PRODUTO_TAMANHO_NOME";
 	public static final String PRODUTO_PLURAL = "PRODUTO_PLURAL";
@@ -129,7 +129,7 @@ public class KaizenTranslatorEnUs extends AbstractMapTranslator {
 		put(CLIENTE_NOME_OBRIGATORIO, "Nome do cliente deve ser informado.");
 		put(CLIENTE_TAMANHO_NOME, "O nome do cliente deve ter entre {0} e {1} caracteres.");
 
-		put(PRODUTO, "Produto");
+		put(PRODUTO, "Funcao");
 		put(PRODUTO_PLURAL, "Produtos");
 		put(PRODUTO_NOME_OBRIGATORIO, "Nome do produto deve ser informado.");
 		put(PRODUTO_TAMANHO_NOME, "O nome do produto deve ter entre {0} e {1} caracteres.");

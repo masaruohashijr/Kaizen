@@ -2,10 +2,9 @@ package com.logus.kaizen.view.edit;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
-import com.logus.kaizen.model.apoio.ambiente.Ambiente;
-import com.logus.kaizen.model.plano.Liberacao;
 import com.logus.core.model.dialog.DialogButtonType;
 import com.logus.core.model.persistence.PersistenceException;
 import com.logus.core.model.persistence.jpa.JpaValidator;
@@ -13,7 +12,9 @@ import com.logus.core.view.dialog.DialogButton;
 import com.logus.core.view.dialog.Responsiveness;
 import com.logus.core.view.exceptions.ExceptionHandler;
 import com.logus.core.view.list.BeanGrid;
-import com.logus.kaizen.view.plano.LiberacaoForm;
+import com.logus.kaizen.model.apoio.ambiente.Ambiente;
+import com.logus.kaizen.model.kotae.plano.Liberacao;
+import com.logus.kaizen.view.kotae.plano.LiberacaoForm;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -98,7 +99,7 @@ public class LiberacaoEditWindow<T extends Object> extends Dialog {
 	 * Construtor.
 	 *
 	 * @param caption           título da janela.
-	 * @param liberacaoForm              formulário que permite a alteração dos campos do
+	 * @param liberacaoForm     formulário que permite a alteração dos campos do
 	 *                          objeto.
 	 * @param confirmButtonType tipo de botão para confirmação da edição.
 	 * @param readOnly          se {@code true}, a janela será usada apenas para a
@@ -244,21 +245,16 @@ public class LiberacaoEditWindow<T extends Object> extends Dialog {
 				BeanGrid<Ambiente> gridAmbientesSelector = form.getAmbientesSelector().getGrid();
 				Set<Ambiente> selectedItems = gridAmbientesSelector.getSelectedItems();
 				Object[] array = selectedItems.toArray();
-				if (array.length <= 1) {
-					Ambiente object = (Ambiente) array[0];
-					form.getObject().setAmbiente(object);
-					validateJPA();
-					confirm(form.getObject());
-				} else {
-					Liberacao clone = null;
-					for (int i = 0; i < array.length; i++) {
-						clone = new Liberacao();
-						clone.assignFrom(form.getObject());
-						Ambiente object = (Ambiente) array[i];
-						clone.setAmbiente(object);
-						validate(clone);
-						confirm(clone);
-					}
+				Liberacao clone = null;
+				Date agora = new Date(System.currentTimeMillis());
+				for (int i = 0; i < array.length; i++) {
+					clone = new Liberacao();
+					clone.assignFrom(form.getObject());
+					Ambiente object = (Ambiente) array[i];
+					clone.setDataAtualizacao(agora);
+					clone.setAmbiente(object);
+					validate(clone);
+					confirm(clone);
 				}
 			}
 			close();
@@ -314,13 +310,6 @@ public class LiberacaoEditWindow<T extends Object> extends Dialog {
 	 */
 	public void cancel(Liberacao itemSolicitacao) {
 		// opcional
-	}
-
-	/**
-	 * Promove validações a partir de anotações JPA e de campo.
-	 */
-	private void validateJPA() {
-		validate(this.form.getObject());
 	}
 
 }

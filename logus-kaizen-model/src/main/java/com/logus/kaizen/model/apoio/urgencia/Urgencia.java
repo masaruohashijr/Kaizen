@@ -5,6 +5,7 @@ package com.logus.kaizen.model.apoio.urgencia;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,8 +15,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.persistence.Assignable;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.translation.KaizenTranslator;
+import com.logus.kaizen.model.util.YokaiListener;
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -24,10 +27,9 @@ import com.logus.core.model.persistence.Assignable;
  *
  */
 @Entity
-@Table(name = Urgencia.TABLE_NAME)
-public class Urgencia implements Assignable<Urgencia> {
-
-	public static final String TABLE_NAME = "KZ_URGENCIA";
+@EntityListeners(YokaiListener.class)
+@Table(name = Urgencia.TB_URGENCIA)
+public class Urgencia implements Assignable<Urgencia>, TableNames {
 
 	@Id
 	@TableGenerator(name = "seq_urgencia", initialValue = 1, allocationSize = 1)

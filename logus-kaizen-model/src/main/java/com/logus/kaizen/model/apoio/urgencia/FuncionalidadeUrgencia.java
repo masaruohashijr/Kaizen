@@ -13,11 +13,11 @@ public class FuncionalidadeUrgencia extends Funcionalidade {
 	/**
 	 * Cadastro de urgências.
 	 */
-	public static final FuncionalidadeUrgencia FUNC_URGENCIA_CADASTRAR = create("FUNC_URGENCIA_CADASTRAR","Cadastrar Produto");
+	public static final FuncionalidadeUrgencia FUNC_URGENCIA_CADASTRAR = create("FUNC_URGENCIA_CADASTRAR","Cadastrar Funcao");
 	/**
 	 * Consulta de urgências.
 	 */
-	public static final FuncionalidadeUrgencia FUNC_URGENCIA_CONSULTAR = create("FUNC_URGENCIA_CONSULTAR","Consultar Produto");
+	public static final FuncionalidadeUrgencia FUNC_URGENCIA_CONSULTAR = create("FUNC_URGENCIA_CONSULTAR","Consultar Funcao");
 
 	/**
 	 * Cria uma nova funcionalidade.

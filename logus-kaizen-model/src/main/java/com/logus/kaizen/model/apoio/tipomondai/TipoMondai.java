@@ -10,10 +10,13 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -21,9 +24,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.persistence.Assignable;
 import com.logus.core.model.persistence.CollectionSynchronizer;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.processo.Processo;
+import com.logus.kaizen.model.solicitacao.Solicitacao;
+import com.logus.kaizen.model.translation.KaizenTranslator;
+import com.logus.kaizen.model.util.YokaiListener;
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -32,10 +39,10 @@ import com.logus.core.model.persistence.CollectionSynchronizer;
  *
  */
 @Entity
-@Table(name = TipoMondai.NOME_TABELA_TIPO_MONDAI)
+@EntityListeners(YokaiListener.class)
+@Table(name = TipoMondai.TB_TIPO_MONDAI)
 
-public class TipoMondai implements Assignable<TipoMondai> {
-	public static final String NOME_TABELA_TIPO_MONDAI = "KZ_TIPO_MONDAI";
+public class TipoMondai implements Assignable<TipoMondai>, TableNames {
 
 	@Id
 	@TableGenerator(name = "seq_tipo_mondai", initialValue = 1, allocationSize = 1)
@@ -56,6 +63,17 @@ public class TipoMondai implements Assignable<TipoMondai> {
 	@OneToMany(mappedBy = "tipoMondai", targetEntity = TipoMondaiProjeto.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@Size(min = 0)
 	private Collection<TipoMondaiProjeto> tiposMondaiProjeto = new ArrayList<TipoMondaiProjeto>();
+
+	@JoinColumn(name = "seq_processo", referencedColumnName = "seq_processo", nullable = true)
+	@ManyToOne(optional = true)
+	private Processo processo;
+
+	@OneToMany(mappedBy = "tipoMondai", targetEntity = FuncaoPassoItem.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<FuncaoPassoItem> funcoesPassos = new ArrayList<FuncaoPassoItem>();
+
+	@OneToMany(mappedBy = "tipoMondai", targetEntity = Solicitacao.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 0)
+	private Collection<Solicitacao> solicitacao = new ArrayList<Solicitacao>();
 
 	@Column(name = "flg_ativo", nullable = false)
 	private boolean ativo = Boolean.TRUE;
@@ -78,8 +96,18 @@ public class TipoMondai implements Assignable<TipoMondai> {
 		this.nome = tipoMondai.getNome();
 		this.descricao = tipoMondai.getDescricao();
 		this.ativo = tipoMondai.isAtivo();
+		this.processo = tipoMondai.getProcesso();
 		CollectionSynchronizer.synchronize(tipoMondai.tiposMondaiProjeto, this.tiposMondaiProjeto, tipoMondaiProjeto -> tipoMondaiProjeto.setTipoMondai(this));
+		CollectionSynchronizer.synchronize(tipoMondai.solicitacao, this.solicitacao, solicitacao -> solicitacao.setTipoMondai(this));
 		return this;
+	}
+
+	public Processo getProcesso() {
+		return processo;
+	}
+
+	public void setProcesso(Processo processo) {
+		this.processo = processo;
 	}
 
 	/**
@@ -127,6 +155,14 @@ public class TipoMondai implements Assignable<TipoMondai> {
 		this.id = id;
 	}
 
+	public Collection<Solicitacao> getSolicitacao() {
+		return solicitacao;
+	}
+
+	public void setSolicitacao(Collection<Solicitacao> solicitacao) {
+		this.solicitacao = solicitacao;
+	}
+
 	@Override
 	public String toString() {
 		return nome;
@@ -170,6 +206,13 @@ public class TipoMondai implements Assignable<TipoMondai> {
 		this.tiposMondaiProjeto = tiposMondaiProjeto;
 	}
 
+	public Collection<FuncaoPassoItem> getFuncoesPassos() {
+		return funcoesPassos;
+	}
+
+	public void setFuncoesPassos(Collection<FuncaoPassoItem> funcoesPassos) {
+		this.funcoesPassos = funcoesPassos;
+	}
 
 
 }

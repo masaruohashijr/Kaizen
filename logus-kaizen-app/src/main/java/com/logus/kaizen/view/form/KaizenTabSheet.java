@@ -5,6 +5,13 @@ import java.lang.reflect.Field;
 import com.logus.core.view.form.TabSheet;
 import com.vaadin.flow.component.tabs.Tabs;
 
+/**
+ *
+ * @author Masaru Ohashi Júnior
+ * @since 6 de mar de 2019
+ * @version 1.0.0
+ *
+ */
 public class KaizenTabSheet extends TabSheet {
 
 	/**
@@ -25,4 +32,5 @@ public class KaizenTabSheet extends TabSheet {
 		}
 		return tabs;
 	}
+
 }

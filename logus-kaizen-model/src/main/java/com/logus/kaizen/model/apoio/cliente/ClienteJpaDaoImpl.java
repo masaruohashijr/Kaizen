@@ -5,9 +5,10 @@ package com.logus.kaizen.model.apoio.cliente;
 
 import java.util.Collection;
 
-import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.persistence.jpa.AbstractJpaDao;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 
 /**
  *
@@ -36,7 +37,7 @@ public class ClienteJpaDaoImpl extends AbstractJpaDao<Cliente> implements Client
 
 	@Override
 	public Collection<Cliente> loadClientes() {
-		return loadCollection("seq_cliente, nom_cliente, flg_ativo", Cliente.TABLE_NAME, "flg_ativo = ?", "nom_cliente",
+		return loadCollection("seq_cliente, nom_cliente, flg_ativo", TableNames.TB_CLIENTE, "flg_ativo = ?", "nom_cliente",
 				Boolean.TRUE);
 	}
 
@@ -58,7 +59,7 @@ public class ClienteJpaDaoImpl extends AbstractJpaDao<Cliente> implements Client
 	 */
 	@Override
 	public String getTableName() {
-		return Cliente.TABLE_NAME;
+		return TableNames.TB_CLIENTE;
 	}
 
 	/*

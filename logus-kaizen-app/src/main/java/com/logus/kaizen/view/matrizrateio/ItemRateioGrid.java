@@ -1,10 +1,10 @@
 package com.logus.kaizen.view.matrizrateio;
 
-import com.logus.kaizen.model.matrizrateio.ItemRateio;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.translation.TM;
 import com.logus.core.model.util.Formats;
 import com.logus.core.view.list.BeanGrid;
+import com.logus.kaizen.model.matrizrateio.ItemRateio;
+import com.logus.kaizen.model.translation.KaizenTranslator;
 
 /**
  * {@link BeanGrid} para {@link ItemRateio}.

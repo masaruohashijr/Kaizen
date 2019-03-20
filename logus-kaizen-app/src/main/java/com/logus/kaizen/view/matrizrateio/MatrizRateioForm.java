@@ -1,9 +1,5 @@
 package com.logus.kaizen.view.matrizrateio;
 
-import com.logus.kaizen.model.matrizrateio.ItemRateio;
-import com.logus.kaizen.model.matrizrateio.MatrizRateio;
-import com.logus.kaizen.model.matrizrateio.MatrizRateio.TipoMatriz;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.dialog.DialogButtonType;
 import com.logus.core.model.translation.CoreTranslator;
 import com.logus.core.model.translation.TM;
@@ -12,6 +8,10 @@ import com.logus.core.view.form.EnumRadioGroup;
 import com.logus.core.view.form.TabSheet;
 import com.logus.core.view.list.AbstractListEditor;
 import com.logus.core.view.list.BeanGrid;
+import com.logus.kaizen.model.matrizrateio.ItemRateio;
+import com.logus.kaizen.model.matrizrateio.MatrizRateio;
+import com.logus.kaizen.model.matrizrateio.MatrizRateio.TipoMatriz;
+import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;

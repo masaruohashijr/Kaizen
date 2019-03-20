@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,11 +20,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
+import com.logus.core.model.persistence.Assignable;
+import com.logus.kaizen.model.TableNames;
 import com.logus.kaizen.model.apoio.ambiente.Ambiente;
 import com.logus.kaizen.model.apoio.atendimento.Atendimento;
 import com.logus.kaizen.model.apoio.urgencia.Urgencia;
+import com.logus.kaizen.model.kotae.plano.Plano;
 import com.logus.kaizen.model.translation.KaizenTranslator;
-import com.logus.core.model.persistence.Assignable;
+import com.logus.kaizen.model.util.YokaiListener;
 
 /**
  * Para uma matriz de rateio estática, representa o percentual a ser alocado a
@@ -35,28 +39,28 @@ import com.logus.core.model.persistence.Assignable;
  *
  */
 @Entity
-@Table(name = ItemSolicitacao.TABLE_NAME)
-public class ItemSolicitacao implements Assignable<ItemSolicitacao> {
-
-	/**
-	 * Nome da tabela onde esta entidade será persistida.
-	 */
-	public static final String TABLE_NAME = "KZ_ITEM_SOLICITACAO";
+@EntityListeners(YokaiListener.class)
+@Table(name = ItemSolicitacao.TB_ITEM_SOLICITACAO)
+public class ItemSolicitacao implements Assignable<ItemSolicitacao>, TableNames {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "seq_ambiente", referencedColumnName = "seq_ambiente", nullable = false)
 	@NotNull(message = KaizenTranslator.ITEM_SOLICITACAO_AMBIENTE_OBRIGATORIO)
 	private Ambiente ambiente;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "seq_urgencia", referencedColumnName = "seq_urgencia", nullable = false)
-	@NotNull(message = KaizenTranslator.ITEM_SOLICITACAO_URGENCIA_OBRIGATORIA)
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "seq_urgencia", referencedColumnName = "seq_urgencia", nullable = true)
+	@Null
 	private Urgencia urgencia;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "seq_atendimento", referencedColumnName = "seq_atendimento", nullable = false)
-	@NotNull(message = KaizenTranslator.ITEM_SOLICITACAO_ATENDIMENTO_OBRIGATORIO)
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "seq_atendimento", referencedColumnName = "seq_atendimento", nullable = true)
+	@Null
 	private Atendimento atendimento;
+
+//	@ManyToOne(optional = true)
+//	@JoinColumn(name = "seq_plano", referencedColumnName = "seq_plano", nullable = true)
+//	private Plano plano;
 
 	/**
 	 * Identificador único gerado automaticamente pelo Sistema.
@@ -68,21 +72,25 @@ public class ItemSolicitacao implements Assignable<ItemSolicitacao> {
 	private Long id;
 
 	@Column(name = "dat_ultimo_atendimento", nullable = true)
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Null
 	private Date dataUltimoAtendimento;
 
-	@Column(name = "gcm", nullable = true, length = 100)
-	@Size(min = 0, max = 100, message = KaizenTranslator.ITEM_SOLICITACAO_GCM_TAMANHO)
+	@Column(name = "cod_responsavel", nullable = true, length = 100)
+	@Size(min = 0, max = 50, message = KaizenTranslator.ITEM_SOLICITACAO_RESPONSAVEL_TAMANHO)
 	@Null
-	private String gcm;
+	private String codigoResponsavel;
 
 	/**
 	 * Solicitação à qual este item pertence.
 	 */
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "seq_solicitacao", referencedColumnName = "seq_solicitacao", nullable = false)
+	@NotNull(message = KaizenTranslator.SOLICITACAO_OBRIGATORIA)
 	private Solicitacao solicitacao;
+
+	@Column(name = "solicitado", nullable = false)
+	private boolean solicitado = Boolean.FALSE;
 
 	/**
 	 * Construtor.
@@ -105,11 +113,14 @@ public class ItemSolicitacao implements Assignable<ItemSolicitacao> {
 	@Override
 	public ItemSolicitacao assignFrom(ItemSolicitacao object) {
 		this.id = object.id;
+		this.codigoResponsavel = object.codigoResponsavel;
 		this.ambiente = object.ambiente;
 		this.urgencia = object.urgencia;
 		this.atendimento = object.atendimento;
 		this.solicitacao = object.solicitacao;
 		this.dataUltimoAtendimento = object.dataUltimoAtendimento;
+		this.solicitado = object.solicitado;
+//		this.plano = object.getPlano();
 		return this;
 	}
 
@@ -202,12 +213,30 @@ public class ItemSolicitacao implements Assignable<ItemSolicitacao> {
 		}
 	}
 
-	public String getGcm() {
-		return gcm;
+	public String getCodigoResponsavel() {
+		return codigoResponsavel;
 	}
 
-	public void setGcm(String gcm) {
-		this.gcm = gcm;
+	public void setCodigoResponsavel(String codigoResponsavel) {
+		this.codigoResponsavel = codigoResponsavel;
 	}
+
+	public boolean isSolicitado() {
+		return solicitado;
+	}
+
+	public void setSolicitado(boolean solicitado) {
+		this.solicitado = solicitado;
+	}
+
+//	public Plano getPlano() {
+//		return plano;
+//	}
+//
+//	public void setPlano(Plano plano) {
+//		this.plano = plano;
+//	}
+
+
 
 }

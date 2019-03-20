@@ -3,7 +3,6 @@
  */
 package com.logus.kaizen.model.solicitacao;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,6 +12,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,12 +31,20 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.apoio.biblioteca.Biblioteca;
-import com.logus.kaizen.model.apoio.produto.Produto;
-import com.logus.kaizen.model.plano.Plano;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.persistence.Assignable;
 import com.logus.core.model.persistence.CollectionSynchronizer;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.atendimento.Atendimento;
+import com.logus.kaizen.model.apoio.biblioteca.Biblioteca;
+import com.logus.kaizen.model.apoio.produto.Produto;
+import com.logus.kaizen.model.apoio.projeto.Projeto;
+import com.logus.kaizen.model.apoio.resolucao.Resolucao;
+import com.logus.kaizen.model.apoio.tipomondai.TipoMondai;
+import com.logus.kaizen.model.chronos.Chronos;
+import com.logus.kaizen.model.kotae.plano.Plano;
+import com.logus.kaizen.model.translation.KaizenTranslator;
+import com.logus.kaizen.model.util.YokaiListener;
+
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -45,10 +53,11 @@ import com.logus.core.model.persistence.CollectionSynchronizer;
  *
  */
 @Entity
-@Table(name = Solicitacao.TABLE_SOLICITACAO)
-public class Solicitacao implements Assignable<Solicitacao> {
+@EntityListeners(YokaiListener.class)
+@Table(name = Solicitacao.TB_SOLICITACAO)
+public class Solicitacao implements Assignable<Solicitacao>, TableNames {
 
-	public static final String TABLE_SOLICITACAO = "KZ_SOLICITACAO";
+	boolean chronosAtivo = false;
 
 	@Id
 	@TableGenerator(name = "seq_solicitacao", initialValue = 1, allocationSize = 1)
@@ -56,29 +65,66 @@ public class Solicitacao implements Assignable<Solicitacao> {
 	@Column(name = "seq_solicitacao")
 	private Long id;
 
-	@Column(name = "issue", length = 10, nullable = false)
-	@Size(min = 1, max = 10, message = KaizenTranslator.SOLICITACAO_TAMANHO_ISSUE)
-	@NotNull(message = KaizenTranslator.SOLICITACAO_ISSUE_OBRIGATORIO)
-	private String issue;
+	@Column(name = "seq_mondai")
+	private Long idMondai;
 
-	@Column(name = "tit_issue", length = 100, nullable = false)
-	@Size(min = 1, max = 100, message = KaizenTranslator.SOLICITACAO_TAMANHO_TITULO_ISSUE)
-	@NotNull(message = KaizenTranslator.SOLICITACAO_TITULO_ISSUE_OBRIGATORIO)
-	private String tituloIssue;
+	@ManyToOne
+	@JoinColumn(name = "seq_projeto", referencedColumnName = "seq_projeto", nullable = true)
+	@Null
+	private Projeto projeto;
 
-	@Column(name = "nom_solicitante", length = 100, nullable = false)
-	@Size(min = 1, max = 100, message = KaizenTranslator.SOLICITACAO_NOME_SOLICITANTE_TAMANHO)
-	@NotNull(message = KaizenTranslator.SOLICITACAO_NOME_SOLICITANTE_OBRIGATORIO)
-	private String nomeSolicitante;
+	@ManyToOne
+	@JoinColumn(name = "seq_atendimento", referencedColumnName = "seq_atendimento", nullable = true)
+	@Null
+	private Atendimento atendimento;
+
+	@ManyToOne
+	@JoinColumn(name = "seq_resolucao", referencedColumnName = "seq_resolucao", nullable = true)
+	@Null
+	private Resolucao resolucao;
+
+	@ManyToOne
+	@JoinColumn(name = "seq_tipo_mondai", referencedColumnName = "seq_tipo_mondai", nullable = false)
+	@NotNull(message = KaizenTranslator.SOLICITACAO_TIPO_MONDAI_OBRIGATORIO)
+	private TipoMondai tipoMondai;
+
+	@Column(name = "chave_jira", length = 10, nullable = true)
+	@Size(min = 0, max = 10, message = KaizenTranslator.SOLICITACAO_TAMANHO_MONDAI)
+	@Null
+	private String chaveJira;
+
+	@Column(name = "tit_mondai", length = 120, nullable = false)
+	@Size(min = 1, max = 120, message = KaizenTranslator.SOLICITACAO_TAMANHO_TITULO_MONDAI)
+	@NotNull(message = KaizenTranslator.SOLICITACAO_TITULO_MONDAI_OBRIGATORIO)
+	private String tituloMondai;
+
+	@Column(name = "dsc_solicitacao", length = 4000, nullable = true)
+	@Size(min = 0, max = 4000, message = KaizenTranslator.SOLICITACAO_TAMANHO_DESCRICAO)
+	@Null
+	private String descricao;
+
+	@Column(name = "cod_solicitante", length = 100, nullable = false)
+	@Size(min = 1, max = 100, message = KaizenTranslator.SOLICITACAO_CODIGO_SOLICITANTE_TAMANHO)
+	@NotNull(message = KaizenTranslator.SOLICITACAO_CODIGO_SOLICITANTE_OBRIGATORIO)
+	private String codigoSolicitante;
+
+	@Column(name = "cod_responsavel_atual", length = 100, nullable = true)
+	@Size(min = 0, max = 100, message = KaizenTranslator.SOLICITACAO_CODIGO_RESPONSAVEL_TAMANHO)
+	@Null
+	private String codigoResponsavelAtual;
 
 	@Column(name = "dat_commit", nullable = true)
-	@Temporal(TemporalType.DATE)
-	@NotNull(message = KaizenTranslator.SOLICITACAO_DATA_COMMIT_OBRIGATORIA)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Null
 	private Date dataCommit;
 
 	@Column(name = "dat_solicitacao", nullable = true)
-	@Temporal(TemporalType.DATE)
+	@Null
 	private Date dataSolicitacao;
+
+	@Column(name = "dat_ficar_pronto", nullable = true)
+	@Null
+	private Date dataFicarPronto;
 
 	@Column(name = "flg_ativo", nullable = false)
 	private boolean ativo = Boolean.TRUE;
@@ -87,8 +133,8 @@ public class Solicitacao implements Assignable<Solicitacao> {
 	 * Produto.
 	 */
 	@ManyToOne
-	@JoinColumn(name = "seq_produto", referencedColumnName = "seq_produto", nullable = false)
-	@NotNull(message = KaizenTranslator.SOLICITACAO_CLIENTE_OBRIGATORIO)
+	@JoinColumn(name = "seq_produto", referencedColumnName = "seq_produto", nullable = true)
+	@Null(message = KaizenTranslator.SOLICITACAO_PRODUTO_OBRIGATORIO)
 	private Produto produto;
 
 	/**
@@ -112,25 +158,71 @@ public class Solicitacao implements Assignable<Solicitacao> {
 	@Size(min = 0)
 	private Collection<ItemSolicitacao> itensSolicitacao = new ArrayList<ItemSolicitacao>();
 
+	@OneToMany(mappedBy = "solicitacao", targetEntity = ItemAtendimento.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 0)
+	private Collection<ItemAtendimento> itensAtendimento = new ArrayList<ItemAtendimento>();
+
+	@OneToMany(mappedBy = "solicitacao", targetEntity = Chronos.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 0)
+	private Collection<Chronos> togurus = new ArrayList<Chronos>();
+
 	/**
 	 * Bibliotecas
 	 */
 	@ManyToMany
-	@JoinTable(name = "kz_solicitacao_biblioteca", joinColumns = @JoinColumn(name = "seq_solicitacao"),
-	inverseJoinColumns = @JoinColumn(name = "seq_biblioteca"))
+	@JoinTable(name = TableNames.TB_SOLICITACAO_BIBLIOTECA, joinColumns = @JoinColumn(name = "seq_solicitacao", referencedColumnName = "seq_solicitacao", nullable = false), inverseJoinColumns = @JoinColumn(name = "seq_biblioteca"))
 	private Collection<Biblioteca> bibliotecas = new HashSet<>();
 
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "seq_plano", referencedColumnName = "seq_plano", nullable = true)
 	private Plano plano;
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	/**
+	 * Comentario
+	 */
+	@OneToMany(mappedBy = "solicitacao", targetEntity = Comentario.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 0)
+	private Collection<Comentario> comentarios = new ArrayList<Comentario>();
+
+	/**
+	 * Solicitações
+	 */
+	@JoinTable(name = TableNames.TB_SOLICITACAO_DEPENDENCIA, joinColumns = {
+			@JoinColumn(name = "seq_solicitacao", referencedColumnName = "seq_solicitacao", nullable = false) }, inverseJoinColumns = {
+					@JoinColumn(name = "seq_dependencia", referencedColumnName = "seq_solicitacao", nullable = false) })
+	@ManyToMany
+	private Collection<Solicitacao> dependencias = new ArrayList<Solicitacao>();
+
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "seq_dependencia", referencedColumnName = "seq_solicitacao", nullable = true)
+	private Solicitacao dependencia;
 
 	public Solicitacao() {
 	}
 
 	public Solicitacao(Solicitacao solicitacao) {
 		assignFrom(solicitacao);
+	}
+
+	private String chaveMondai;
+
+	public String getChaveMondai() {
+		if (null != projeto) {
+			chaveMondai = projeto.getPrefixoMondai() + "-" + idMondai;
+		}
+		return chaveMondai;
+	}
+
+	public void setChaveMondai(String chaveMondai) {
+		this.chaveMondai = chaveMondai;
+	}
+
+	public String getChaveJira() {
+		return chaveJira;
+	}
+
+	public void setChaveJira(String chaveJira) {
+		this.chaveJira = chaveJira;
 	}
 
 	/*
@@ -141,19 +233,38 @@ public class Solicitacao implements Assignable<Solicitacao> {
 	@Override
 	public Solicitacao assignFrom(Solicitacao object) {
 		this.id = object.id;
-		this.issue = object.issue;
-		this.tituloIssue = object.tituloIssue;
+		this.tituloMondai = object.tituloMondai;
+		this.idMondai = object.idMondai;
+		this.descricao = object.descricao;
 		this.dataSolicitacao = object.dataSolicitacao;
 		this.dataCommit = object.dataCommit;
+		this.dataFicarPronto = object.dataFicarPronto;
 		this.produto = object.produto;
+		this.projeto = object.projeto;
+		this.tipoMondai = object.tipoMondai;
+		this.atendimento = object.atendimento;
+		this.resolucao = object.resolucao;
 		this.ativo = object.ativo;
-		this.nomeSolicitante = object.nomeSolicitante;
+		this.codigoSolicitante = object.codigoSolicitante;
+		this.codigoResponsavelAtual = object.codigoResponsavelAtual;
 		this.versao = object.versao;
 		this.repositorio = object.repositorio;
 		this.plano = object.plano;
-		this.bibliotecas = object.bibliotecas;
+		this.chaveMondai = object.chaveMondai;
+		CollectionSynchronizer.synchronize(object.bibliotecas, this.bibliotecas,
+				biblioteca -> biblioteca.setSolicitacao(this));
 		CollectionSynchronizer.synchronize(object.itensSolicitacao, this.itensSolicitacao,
 				item -> item.setSolicitacao(this));
+		CollectionSynchronizer.synchronize(object.itensAtendimento, this.itensAtendimento,
+				item -> item.setSolicitacao(this));
+		CollectionSynchronizer.synchronize(object.togurus, this.togurus, item -> item.setSolicitacao(this));
+		CollectionSynchronizer.synchronize(object.comentarios, this.comentarios,
+				comentario -> comentario.setSolicitacao(this));
+		CollectionSynchronizer.synchronize(object.dependencias, this.dependencias,
+				solicitacao -> solicitacao.setDependencia(this));
+
+		chaveMondai = projeto.getPrefixoMondai() + "-" + idMondai;
+
 		return this;
 	}
 
@@ -202,20 +313,12 @@ public class Solicitacao implements Assignable<Solicitacao> {
 		this.id = id;
 	}
 
-	public String getIssue() {
-		return issue;
+	public String getTituloMondai() {
+		return tituloMondai;
 	}
 
-	public void setIssue(String issue) {
-		this.issue = issue;
-	}
-
-	public String getTituloIssue() {
-		return tituloIssue;
-	}
-
-	public void setTituloIssue(String tituloIssue) {
-		this.tituloIssue = tituloIssue;
+	public void setTituloMondai(String tituloMondai) {
+		this.tituloMondai = tituloMondai;
 	}
 
 	public Produto getProduto() {
@@ -234,16 +337,20 @@ public class Solicitacao implements Assignable<Solicitacao> {
 		this.itensSolicitacao = itensSolicitacao;
 	}
 
+	public Collection<Comentario> getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(Collection<Comentario> comentarios) {
+		this.comentarios = comentarios;
+	}
+
 	public Date getDataCommit() {
 		return this.dataCommit;
 	}
 
 	public void setDataCommit(Date dataCommit) {
 		this.dataCommit = dataCommit;
-	}
-
-	public String getStrDataSolicitacao() {
-		return sdf.format(dataSolicitacao);
 	}
 
 	public Date getDataSolicitacao() {
@@ -254,16 +361,12 @@ public class Solicitacao implements Assignable<Solicitacao> {
 		this.dataSolicitacao = dataSolicitacao;
 	}
 
-	public String getStrDataCommit() {
-		return sdf.format(dataCommit);
+	public String getCodigoSolicitante() {
+		return codigoSolicitante;
 	}
 
-	public String getNomeSolicitante() {
-		return nomeSolicitante;
-	}
-
-	public void setNomeSolicitante(String nomeSolicitante) {
-		this.nomeSolicitante = nomeSolicitante;
+	public void setCodigoSolicitante(String nomeSolicitante) {
+		this.codigoSolicitante = nomeSolicitante;
 	}
 
 	public String getVersao() {
@@ -284,7 +387,7 @@ public class Solicitacao implements Assignable<Solicitacao> {
 
 	@Override
 	public String toString() {
-		return issue + " " + tituloIssue;
+		return projeto.getPrefixoMondai() + "-" + idMondai + " " + tituloMondai;
 	}
 
 	public Plano getPlano() {
@@ -303,5 +406,108 @@ public class Solicitacao implements Assignable<Solicitacao> {
 		this.bibliotecas = bibliotecas;
 	}
 
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public Date getDataFicarPronto() {
+		return dataFicarPronto;
+	}
+
+	public void setDataFicarPronto(Date dataFicarPronto) {
+		this.dataFicarPronto = dataFicarPronto;
+	}
+
+	public Projeto getProjeto() {
+		return projeto;
+	}
+
+	public void setProjeto(Projeto projeto) {
+		this.projeto = projeto;
+	}
+
+	public Atendimento getAtendimento() {
+		return atendimento;
+	}
+
+	public void setAtendimento(Atendimento atendimento) {
+		this.atendimento = atendimento;
+	}
+
+	public TipoMondai getTipoMondai() {
+		return tipoMondai;
+	}
+
+	public void setTipoMondai(TipoMondai tipoMondai) {
+		this.tipoMondai = tipoMondai;
+	}
+
+	public Collection<ItemAtendimento> getItensAtendimento() {
+		return itensAtendimento;
+	}
+
+	public void setItensAtendimento(Collection<ItemAtendimento> itensAtendimento) {
+		this.itensAtendimento = itensAtendimento;
+	}
+
+	public Resolucao getResolucao() {
+		return resolucao;
+	}
+
+	public void setResolucao(Resolucao resolucao) {
+		this.resolucao = resolucao;
+	}
+
+	public String getCodigoResponsavelAtual() {
+		return codigoResponsavelAtual;
+	}
+
+	public void setCodigoResponsavelAtual(String codigoResponsavelAtual) {
+		this.codigoResponsavelAtual = codigoResponsavelAtual;
+	}
+
+	public Long getIdMondai() {
+		return idMondai;
+	}
+
+	public void setIdMondai(Long idMondai) {
+		this.idMondai = idMondai;
+	}
+
+	public Collection<Chronos> getTogurus() {
+		return togurus;
+	}
+
+	public void setTogurus(Collection<Chronos> togurus) {
+		this.togurus = togurus;
+	}
+
+	public Collection<Solicitacao> getDependencias() {
+		return dependencias;
+	}
+
+	public void setDependencias(Collection<Solicitacao> dependencias) {
+		this.dependencias = dependencias;
+	}
+
+	public Solicitacao getDependencia() {
+		return dependencia;
+	}
+
+	public void setDependencia(Solicitacao dependencia) {
+		this.dependencia = dependencia;
+	}
+
+	public boolean isChronosAtivo() {
+		return chronosAtivo;
+	}
+
+	public void setChronosAtivo(boolean chronosAtivo) {
+		this.chronosAtivo = chronosAtivo;
+	}
 
 }

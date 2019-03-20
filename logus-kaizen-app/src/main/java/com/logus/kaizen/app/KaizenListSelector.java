@@ -25,6 +25,8 @@ public class KaizenListSelector<T> extends ListSelector<T> {
 	public KaizenListSelector(String caption, boolean hasFilter, BeanGrid<T> grid, SelectionMode mode,
 			Collection<T> allObjects, Collection<T> selectedObjects) {
 		super(caption, grid, mode, allObjects, selectedObjects);
+		setSpacing(false);
+		setPadding(false);
 		this.grid = grid;
 		int posFilter = 0;
 		if (!Strings.isNullOrEmpty(caption)) {
@@ -33,8 +35,12 @@ public class KaizenListSelector<T> extends ListSelector<T> {
 		if (!hasFilter) {
 			removeFilter(posFilter);
 		} else {
-			getElement().getChild(posFilter);
+			estilizarFilter(posFilter);
 		}
+	}
+
+	private void estilizarFilter(int posFilter) {
+		getElement().getChild(posFilter).getStyle().set("height", "10%");
 	}
 
 	private void removeFilter(int posFilter) {

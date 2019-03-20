@@ -2,6 +2,7 @@ package com.logus.kaizen.view.list;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,6 @@ import java.util.stream.Stream;
 
 import javax.persistence.Entity;
 
-import com.logus.kaizen.model.apoio.ambiente.Ambiente;
-import com.logus.kaizen.model.solicitacao.ItemSolicitacao;
-import com.logus.kaizen.view.edit.ItemSolicitacaoEditWindow;
-import com.logus.kaizen.view.solicitacao.ItemSolicitacaoForm;
-import com.logus.kaizen.view.solicitacao.ItemSolicitacaoGrid;
 import com.logus.core.model.dialog.DialogButtonType;
 import com.logus.core.model.list.ListEditorButtonType;
 import com.logus.core.model.persistence.Assignable;
@@ -28,6 +24,11 @@ import com.logus.core.view.exceptions.ExceptionHandler;
 import com.logus.core.view.form.FormLayoutUtil;
 import com.logus.core.view.list.BeanGrid;
 import com.logus.core.view.list.ListEditorButton;
+import com.logus.kaizen.model.apoio.ambiente.Ambiente;
+import com.logus.kaizen.model.solicitacao.ItemSolicitacao;
+import com.logus.kaizen.view.edit.ItemSolicitacaoEditWindow;
+import com.logus.kaizen.view.mondai.ItemSolicitacaoForm;
+import com.logus.kaizen.view.mondai.ItemSolicitacaoGrid;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.Html;
@@ -542,6 +543,8 @@ public abstract class ItemSolicitacaoListEditor<T extends Object> extends Vertic
 
 			public void confirm(ItemSolicitacao obj) throws Exception {
 				if (!objExisteGrid(obj)) {
+					Date dataUltimoAtendimento = new Date(System.currentTimeMillis());
+					obj.setDataUltimoAtendimento(dataUltimoAtendimento);
 					insertObject(obj);
 					grid.addObject(obj);
 					refreshButtons();
@@ -549,6 +552,7 @@ public abstract class ItemSolicitacaoListEditor<T extends Object> extends Vertic
 							getNomeEntidade(), obj));
 					toFocus.focus();
 				} else {
+					// FALTA I18N
 					NotificationDialog.showError("Ambiente já selecionado. Para alterar a Urgência você deve selecionar o Item já cadastrado e acionar o botão 'Alterar'.");
 					return;
 				}
@@ -557,16 +561,18 @@ public abstract class ItemSolicitacaoListEditor<T extends Object> extends Vertic
 			private boolean objExisteGrid(ItemSolicitacao obj) {
 				boolean existe = false;
 				List<ItemSolicitacao> items = grid.getItems();
+				Ambiente ambienteObj = obj.getAmbiente();
+				String nomeClienteObj = ambienteObj.getCliente().getNome();
+				String nomeAmbienteObj = ambienteObj.getNome();
+				String nmObj = nomeClienteObj + nomeAmbienteObj;
 				for (ItemSolicitacao itemSolicitacao : items) {
-					Ambiente ambienteObj = obj.getAmbiente();
-					String nomeClienteObj = ambienteObj.getCliente().getNome();
-					String nomeAmbienteObj = ambienteObj.getNome();
-					String nmObj = nomeClienteObj + nomeAmbienteObj;
 					String nomeClienteItem = itemSolicitacao.getAmbiente().getCliente().getNome();
 					String nomeAmbienteItem = itemSolicitacao.getAmbiente().getNome();
 					String nmItem = nomeClienteItem + nomeAmbienteItem;
 					existe = Objects.equals(nmObj, nmItem);
-					break;
+					if(existe) {
+						break;
+					}
 				}
 				return existe;
 			}

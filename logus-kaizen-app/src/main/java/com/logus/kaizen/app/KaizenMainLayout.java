@@ -30,6 +30,7 @@ public class KaizenMainLayout extends LogusAppLayoutJohannes {
 	 */
 	public KaizenMainLayout() {
 		super.setBehaviour(KaizenMainLayout.behaviour);
+//		getElement().getStyle().set("overflow", "auto");
 	}
 
 	@Override

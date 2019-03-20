@@ -20,10 +20,10 @@ import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.persistence.Assignable;
 import com.logus.core.model.persistence.CollectionSynchronizer;
 import com.logus.core.model.translation.TM;
+import com.logus.kaizen.model.translation.KaizenTranslator;
 
 /**
  * Matrizes de rateio estabelecem percentuais que serão usados para ratear

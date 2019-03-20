@@ -11,6 +11,7 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,8 +25,10 @@ import javax.validation.constraints.Size;
 
 import com.logus.core.model.persistence.Assignable;
 import com.logus.core.model.persistence.CollectionSynchronizer;
+import com.logus.kaizen.model.TableNames;
 import com.logus.kaizen.model.apoio.ambiente.Ambiente;
 import com.logus.kaizen.model.translation.KaizenTranslator;
+import com.logus.kaizen.model.util.YokaiListener;
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -34,10 +37,9 @@ import com.logus.kaizen.model.translation.KaizenTranslator;
  *
  */
 @Entity
-@Table(name = Cliente.TABLE_NAME)
-public class Cliente implements Assignable<Cliente> {
-
-	public static final String TABLE_NAME = "KZ_CLIENTE";
+@EntityListeners(YokaiListener.class)
+@Table(name = Cliente.TB_CLIENTE)
+public class Cliente implements Assignable<Cliente>, TableNames {
 
 	@Id
 	@TableGenerator(name = "seq_cliente", initialValue = 1, allocationSize = 1)

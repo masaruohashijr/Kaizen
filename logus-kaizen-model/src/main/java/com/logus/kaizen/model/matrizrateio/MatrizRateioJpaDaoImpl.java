@@ -5,16 +5,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.logus.kaizen.model.centrocusto.CentroCusto;
-import com.logus.kaizen.model.centrocusto.CustosDataServiceImpl;
-import com.logus.kaizen.model.centrocusto.FuncionalidadeCustos;
-import com.logus.kaizen.model.matrizrateio.MatrizRateio.TipoMatriz;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.persistence.PersistenceException;
 import com.logus.core.model.persistence.jpa.AbstractJpaDao;
 import com.logus.core.model.translation.TM;
 import com.logus.core.model.util.Strings;
+import com.logus.kaizen.model.centrocusto.CentroCusto;
+import com.logus.kaizen.model.centrocusto.CustosDataServiceImpl;
+import com.logus.kaizen.model.centrocusto.FuncionalidadeCustos;
+import com.logus.kaizen.model.matrizrateio.MatrizRateio.TipoMatriz;
+import com.logus.kaizen.model.translation.KaizenTranslator;
 
 /**
  * Implementação JPA para MatrizRateioDao.

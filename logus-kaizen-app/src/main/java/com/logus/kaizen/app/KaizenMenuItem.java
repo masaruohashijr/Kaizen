@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.logus.kaizen.model.FuncionalidadeLivreAcesso;
 import com.logus.core.model.aut.Funcionalidade;
 import com.logus.core.view.app.Application.ComponentProvider;
 import com.logus.core.view.app.layouts.MenuItem;
+import com.logus.kaizen.model.FuncionalidadeLivreAcesso;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.icon.Icon;
 /**

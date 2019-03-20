@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import com.logus.kaizen.model.apoio.ambiente.Ambiente;
-import com.logus.kaizen.model.solicitacao.ItemSolicitacao;
 import com.logus.core.model.dialog.DialogButtonType;
 import com.logus.core.model.persistence.PersistenceException;
 import com.logus.core.model.persistence.jpa.JpaValidator;
@@ -13,7 +11,9 @@ import com.logus.core.view.dialog.DialogButton;
 import com.logus.core.view.dialog.Responsiveness;
 import com.logus.core.view.exceptions.ExceptionHandler;
 import com.logus.core.view.list.BeanGrid;
-import com.logus.kaizen.view.solicitacao.ItemSolicitacaoForm;
+import com.logus.kaizen.model.apoio.ambiente.Ambiente;
+import com.logus.kaizen.model.solicitacao.ItemSolicitacao;
+import com.logus.kaizen.view.mondai.ItemSolicitacaoForm;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -55,7 +55,7 @@ public class ItemSolicitacaoEditWindow<T extends Object> extends Dialog {
 	 * @return o objeto que está sendo editado.
 	 */
 	public ItemSolicitacao getObject() {
-		return form.getObject();
+		return (ItemSolicitacao) form.getObject();
 	}
 
 	/**
@@ -241,38 +241,30 @@ public class ItemSolicitacaoEditWindow<T extends Object> extends Dialog {
 	private void confirmAction() {
 		try {
 			if (!readOnly) {
-				BeanGrid<Ambiente> gridAmbientesSelector = form.getAmbientesSelector().getGrid();
+				BeanGrid<Ambiente> gridAmbientesSelector = form.getKaizenListSelector().getGrid();
 				Set<Ambiente> selectedItems = gridAmbientesSelector.getSelectedItems();
 				Object[] array = selectedItems.toArray();
-				if (array.length <= 1) {
-					Ambiente object = (Ambiente) array[0];
-					form.getObject().setAmbiente(object);
-					validate();
-					confirm(form.getObject());
-				} else {
-					ItemSolicitacao clone = null;
-					for (int i = 0; i < array.length; i++) {
-						clone = new ItemSolicitacao();
-						clone.assignFrom(form.getObject());
-						Ambiente object = (Ambiente) array[i];
-						clone.setAmbiente(object);
-						validate(clone);
-						confirm(clone);
-					}
+				ItemSolicitacao clone = null;
+				for (int i = 0; i < array.length; i++) {
+					clone = new ItemSolicitacao();
+					clone.assignFrom((ItemSolicitacao) form.getObject());
+					Ambiente object = (Ambiente) array[i];
+					clone.setAmbiente(object);
+					validate(clone);
+					confirm(clone);
 				}
 			}
 			close();
-
 		} catch (Exception e) {
 			ExceptionHandler.handleErrorException(e);
 		}
 	}
 
-	private void validate(ItemSolicitacao itemSolicitacao) {
+	private void validate(Object object) {
 		PersistenceException ex = new PersistenceException();
 		// Validações de anotações
 		try {
-			JpaValidator.validate(itemSolicitacao);
+			JpaValidator.validate(object);
 		} catch (PersistenceException e) {
 			ex.appendException(e);
 		}
@@ -299,7 +291,7 @@ public class ItemSolicitacaoEditWindow<T extends Object> extends Dialog {
 	/**
 	 * Método que permite definir o comportamento ao confirmar a edição.
 	 *
-	 * @param itemSolicitacao objeto que será persistido.
+	 * @param object objeto que será persistido.
 	 * @throws Exception qualquer problema ocorrido durante a confirmação.
 	 */
 	public void confirm(ItemSolicitacao itemSolicitacao) throws Exception {
@@ -309,18 +301,10 @@ public class ItemSolicitacaoEditWindow<T extends Object> extends Dialog {
 	/**
 	 * Método que permite definir o comportamento ao cancelar a edição.
 	 *
-	 * @param itemSolicitacao objeto que estava sendo editado e cuja edição foi
-	 *                        cancelada.
+	 * @param object objeto que estava sendo editado e cuja edição foi cancelada.
 	 */
-	public void cancel(ItemSolicitacao itemSolicitacao) {
+	public void cancel(Object object) {
 		// opcional
-	}
-
-	/**
-	 * Promove validações a partir de anotações JPA e de campo.
-	 */
-	private void validate() {
-		validate(this.form.getObject());
 	}
 
 }

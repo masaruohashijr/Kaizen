@@ -16,9 +16,9 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
+import com.logus.core.model.persistence.Assignable;
 import com.logus.kaizen.model.centrocusto.CentroCusto;
 import com.logus.kaizen.model.translation.KaizenTranslator;
-import com.logus.core.model.persistence.Assignable;
 
 /**
  * Para uma matriz de rateio estática, representa o percentual a ser alocado a

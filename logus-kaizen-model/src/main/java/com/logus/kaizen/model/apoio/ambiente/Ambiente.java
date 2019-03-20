@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,9 +16,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
+import com.logus.core.model.persistence.Assignable;
+import com.logus.kaizen.model.TableNames;
 import com.logus.kaizen.model.apoio.cliente.Cliente;
 import com.logus.kaizen.model.translation.KaizenTranslator;
-import com.logus.core.model.persistence.Assignable;
+import com.logus.kaizen.model.util.YokaiListener;
 
 /**
  *
@@ -27,10 +30,9 @@ import com.logus.core.model.persistence.Assignable;
  *
  */
 @Entity
-@Table(name = Ambiente.TABLE_NAME)
-public class Ambiente implements Assignable<Ambiente> {
-
-	public static final String TABLE_NAME = "KZ_AMBIENTE";
+@EntityListeners(YokaiListener.class)
+@Table(name = Ambiente.TB_AMBIENTE)
+public class Ambiente implements Assignable<Ambiente>, TableNames {
 
 	@Id
 	@TableGenerator(name = "seq_ambiente", initialValue = 1, allocationSize = 1)
@@ -46,6 +48,11 @@ public class Ambiente implements Assignable<Ambiente> {
 	@Size(min = 0, max = 100, message = KaizenTranslator.AMBIENTE_HOST_TAMANHO_NOME)
 	@Null
 	private String host = new String();
+
+	@Column(name = "acronimo", nullable = true, length = 100)
+	@Size(min = 0, max = 6, message = KaizenTranslator.AMBIENTE_ACRONIMO_TAMANHO_NOME)
+	@Null
+	private String acronimo = new String();
 
 	@Column(name = "nom_ambiente", nullable = false, length = 100)
 	@Size(min = 1, max = 100, message = KaizenTranslator.AMBIENTE_TAMANHO_NOME)
@@ -83,6 +90,7 @@ public class Ambiente implements Assignable<Ambiente> {
 		this.id = object.getId();
 		this.host = object.getHost();
 		this.nome = object.getNome();
+		this.acronimo = object.getAcronimo();
 		this.cliente = object.getCliente();
 		this.descricao = object.getDescricao();
 		this.ativo = object.isAtivo();
@@ -173,6 +181,14 @@ public class Ambiente implements Assignable<Ambiente> {
 
 	public Long getId() {
 		return id;
+	}
+
+	public String getAcronimo() {
+		return acronimo;
+	}
+
+	public void setAcronimo(String acronimo) {
+		this.acronimo = acronimo;
 	}
 
 }

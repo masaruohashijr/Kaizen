@@ -5,10 +5,12 @@ package com.logus.kaizen.model.apoio.atendimento;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,9 +22,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.processo.Passo;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.persistence.Assignable;
+import com.logus.core.model.persistence.CollectionSynchronizer;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.processo.Passo;
+import com.logus.kaizen.model.solicitacao.ItemSolicitacao;
+import com.logus.kaizen.model.solicitacao.Solicitacao;
+import com.logus.kaizen.model.translation.KaizenTranslator;
+import com.logus.kaizen.model.util.YokaiListener;
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -31,10 +38,9 @@ import com.logus.core.model.persistence.Assignable;
  *
  */
 @Entity
-@Table(name = Atendimento.TABLE_NAME)
-public class Atendimento implements Assignable<Atendimento> {
-
-	public static final String TABLE_NAME = "KZ_ATENDIMENTO";
+@EntityListeners(YokaiListener.class)
+@Table(name = Atendimento.TB_ATENDIMENTO)
+public class Atendimento implements Assignable<Atendimento>, TableNames {
 
 	@Id
 	@TableGenerator(name = "seq_atendimento", initialValue = 1, allocationSize = 1)
@@ -60,6 +66,14 @@ public class Atendimento implements Assignable<Atendimento> {
 	@Size(min = 0)
 	private Collection<Passo> passosAtendimentosOrigem = new ArrayList<Passo>();
 
+	@OneToMany(mappedBy = "atendimento", targetEntity = Solicitacao.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 0)
+	private Collection<Solicitacao> solicitacoes = new ArrayList<Solicitacao>();
+
+	@OneToMany(mappedBy = "atendimento", targetEntity = ItemSolicitacao.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 0)
+	private Collection<ItemSolicitacao> itensSolicitacoes = new ArrayList<ItemSolicitacao>();
+
 	@Column(name = "flg_ativo", nullable = false)
 	private boolean ativo = Boolean.TRUE;
 
@@ -80,8 +94,10 @@ public class Atendimento implements Assignable<Atendimento> {
 		this.id = atendimento.getId();
 		this.titulo = atendimento.getTitulo();
 		this.descricao = atendimento.getDescricao();
-		this.passosAtendimentosOrigem = atendimento.getPassosAtendimentosOrigem();
-		this.passosAtendimentosDestino = atendimento.getPassosAtendimentosDestino();
+		CollectionSynchronizer.synchronize(atendimento.getPassosAtendimentosOrigem(), this.passosAtendimentosOrigem, passo -> passo.setAtendimentoOrigem(this));
+		CollectionSynchronizer.synchronize(atendimento.getPassosAtendimentosDestino(), this.passosAtendimentosDestino, passo -> passo.setAtendimentoDestino(this));
+		CollectionSynchronizer.synchronize(atendimento.getSolicitacoes(), this.solicitacoes, solicitacao -> solicitacao.setAtendimento(this));
+		CollectionSynchronizer.synchronize(atendimento.getItensSolicitacoes(), this.itensSolicitacoes, itemSolicitacao -> itemSolicitacao.setAtendimento(this));
 		this.ativo = atendimento.isAtivo();
 		return this;
 	}
@@ -157,8 +173,47 @@ public class Atendimento implements Assignable<Atendimento> {
 		this.passosAtendimentosOrigem = passosAtendimentosOrigem;
 	}
 
+	public Collection<Solicitacao> getSolicitacoes() {
+		return solicitacoes;
+	}
+
+	public void setSolicitacoes(Collection<Solicitacao> solicitacoes) {
+		this.solicitacoes = solicitacoes;
+	}
+
 	@Override
 	public String toString() {
 		return titulo;
 	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (id == null) {
+			return this == object;
+		}
+		if (!(object instanceof Atendimento)) {
+			return false;
+		}
+		return Objects.equals(this.id, ((Atendimento) object).id);
+	}
+
+	@Override
+	public int hashCode() {
+		if (id == null) {
+			return super.hashCode();
+		}
+		return Objects.hashCode(id);
+	}
+
+	public Collection<ItemSolicitacao> getItensSolicitacoes() {
+		return itensSolicitacoes;
+	}
+
+	public void setItensSolicitacoes(Collection<ItemSolicitacao> itensSolicitacoes) {
+		this.itensSolicitacoes = itensSolicitacoes;
+	}
+
 }

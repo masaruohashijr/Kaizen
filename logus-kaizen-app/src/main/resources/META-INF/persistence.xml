@@ -16,25 +16,37 @@
 		<class>com.logus.kaizen.model.apoio.atendimento.Atendimento</class>
 		<class>com.logus.kaizen.model.apoio.biblioteca.Biblioteca</class>
 		<class>com.logus.kaizen.model.apoio.cliente.Cliente</class>
-		<class>com.logus.kaizen.model.plano.Plano</class>
-		<class>com.logus.kaizen.model.plano.Liberacao</class>
-		<class>com.logus.kaizen.model.processo.Processo</class>
-		<class>com.logus.kaizen.model.processo.Passo</class>
+		<class>com.logus.kaizen.model.apoio.funcao.Funcao</class>
+		<class>com.logus.kaizen.model.auditoria.GrupoMudanca</class>
+		<class>com.logus.kaizen.model.auditoria.ItemMudanca</class>
+		<class>com.logus.kaizen.model.apoio.funcao.ItemFuncao</class>
+		<class>com.logus.kaizen.model.kotae.plano.Plano</class>
+		<class>com.logus.kaizen.model.kotae.plano.Liberacao</class>
+		<class>com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracao</class>
+		<class>com.logus.kaizen.model.apoio.processo.Processo</class>
+		<class>com.logus.kaizen.model.apoio.processo.Passo</class>
 		<class>com.logus.kaizen.model.apoio.produto.Produto</class>
-		<class>com.logus.kaizen.model.projeto.Projeto</class>
-		<class>com.logus.kaizen.model.projeto.Papel</class>
-		<class>com.logus.kaizen.model.resolucao.Resolucao</class>
+		<class>com.logus.kaizen.model.apoio.projeto.Projeto</class>
+		<class>com.logus.kaizen.model.apoio.projeto.Papel</class>
+		<class>com.logus.kaizen.model.apoio.projeto.ItemPapel</class>
+		<class>com.logus.kaizen.model.apoio.resolucao.Resolucao</class>
 		<class>com.logus.kaizen.model.solicitacao.Solicitacao</class>
 		<class>com.logus.kaizen.model.solicitacao.ItemSolicitacao</class>
+		<class>com.logus.kaizen.model.solicitacao.ItemAtendimento</class>
+		<class>com.logus.kaizen.model.solicitacao.Comentario</class>
 		<class>com.logus.kaizen.model.apoio.tipomondai.TipoMondai</class>
 		<class>com.logus.kaizen.model.apoio.tipomondai.TipoMondaiProjeto</class>
-		<class>com.logus.kaizen.model.transicao.Transicao</class>
+		<class>com.logus.kaizen.model.apoio.tipomondai.PapelPassoItem</class>
+		<class>com.logus.kaizen.model.apoio.tipomondai.FuncaoPassoItem</class>
+		<class>com.logus.kaizen.model.chronos.Chronos</class>
+		<class>com.logus.kaizen.model.apoio.transicao.Transicao</class>
 		<class>com.logus.kaizen.model.apoio.urgencia.Urgencia</class>
 		<!-- Exemplo Catalyst -->
 		<class>com.logus.kaizen.model.centrocusto.CentroCusto</class>
 		<class>com.logus.kaizen.model.matrizrateio.MatrizRateio</class>
 		<class>com.logus.kaizen.model.matrizrateio.ItemRateio</class>
 
+		<shared-cache-mode>NONE</shared-cache-mode>
 
 		<properties>
 
@@ -42,13 +54,42 @@
 			<property name="javax.persistence.jdbc.driver"
 				value="org.postgresql.Driver" />
 			<property name="javax.persistence.jdbc.url"
-				value="${app.controle-deploys.database}" />
+				value="jdbc:postgresql://127.0.0.1:5432/kaizen" />
 			<property name="javax.persistence.jdbc.user"
-				value="${app.controle-deploys.username}" />
+				value="logus" />
 			<property name="javax.persistence.jdbc.password"
-				value="${app.controle-deploys.password}" />
+				value="logus" />
 
 
+			<!-- Eclipselink -->
+			<property name="eclipselink.ddl-generation"
+				value="create-or-extend-tables" />
+			<property name="eclipselink.create-ddl-jdbc-file-name"
+				value="createDDL_ddlGeneration.jdbc" />
+			<property name="eclipselink.drop-ddl-jdbc-file-name"
+				value="dropDDL_ddlGeneration.jdbc" />
+			<property name="eclipselink.ddl-generation.output-mode"
+				value="both" />
+			<property name="eclipselink.cache.shared.default"
+				value="false" />
+			<property name="eclipselink.cache.size.default" value="0" />
+			<property name="eclipselink.cache.type.default" value="none" />
+
+		</properties>
+	</persistence-unit>
+	<persistence-unit name="Security_Persistence_Unit">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>com.logus.kaizen.model.apoio.usuario.Usuario</class>
+		<properties>
+			<!-- Postgresql desenvolvimento -->
+			<property name="javax.persistence.jdbc.driver"
+				value="org.postgresql.Driver" />
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:postgresql://127.0.0.1:5432/divida" />
+			<property name="javax.persistence.jdbc.user"
+				value="logus" />
+			<property name="javax.persistence.jdbc.password"
+				value="logus" />
 			<!-- Eclipselink -->
 			<property name="eclipselink.ddl-generation"
 				value="create-or-extend-tables" />

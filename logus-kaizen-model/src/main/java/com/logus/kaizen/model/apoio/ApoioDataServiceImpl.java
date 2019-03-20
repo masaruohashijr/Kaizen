@@ -3,9 +3,13 @@
  */
 package com.logus.kaizen.model.apoio;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.logus.core.model.persistence.DataAccessObject;
 import com.logus.kaizen.model.apoio.ambiente.AmbienteDao;
 import com.logus.kaizen.model.apoio.ambiente.AmbienteJpaDaoImpl;
 import com.logus.kaizen.model.apoio.atendimento.AtendimentoDao;
@@ -14,24 +18,46 @@ import com.logus.kaizen.model.apoio.biblioteca.BibliotecaDao;
 import com.logus.kaizen.model.apoio.biblioteca.BibliotecaJpaDaoImpl;
 import com.logus.kaizen.model.apoio.cliente.ClienteDao;
 import com.logus.kaizen.model.apoio.cliente.ClienteJpaDaoImpl;
+import com.logus.kaizen.model.apoio.funcao.FuncaoDao;
+import com.logus.kaizen.model.apoio.funcao.FuncaoJpaDaoImpl;
+import com.logus.kaizen.model.apoio.funcao.ItemFuncaoDao;
+import com.logus.kaizen.model.apoio.funcao.ItemFuncaoJpaDaoImpl;
+import com.logus.kaizen.model.apoio.processo.ProcessoDao;
+import com.logus.kaizen.model.apoio.processo.ProcessoJpaDaoImpl;
 import com.logus.kaizen.model.apoio.produto.ProdutoDao;
 import com.logus.kaizen.model.apoio.produto.ProdutoJpaDaoImpl;
+import com.logus.kaizen.model.apoio.projeto.ItemPapelDao;
+import com.logus.kaizen.model.apoio.projeto.ItemPapelJpaDaoImpl;
+import com.logus.kaizen.model.apoio.projeto.PapelDao;
+import com.logus.kaizen.model.apoio.projeto.PapelJpaDaoImpl;
+import com.logus.kaizen.model.apoio.projeto.ProjetoDao;
+import com.logus.kaizen.model.apoio.projeto.ProjetoJpaDaoImpl;
+import com.logus.kaizen.model.apoio.resolucao.ResolucaoDao;
+import com.logus.kaizen.model.apoio.resolucao.ResolucaoJpaDaoImpl;
 import com.logus.kaizen.model.apoio.tipomondai.TipoMondaiDao;
 import com.logus.kaizen.model.apoio.tipomondai.TipoMondaiJpaDaoImpl;
+import com.logus.kaizen.model.apoio.tipomondai.TipoMondaiProjetoDao;
+import com.logus.kaizen.model.apoio.tipomondai.TipoMondaiProjetoJpaDaoImpl;
+import com.logus.kaizen.model.apoio.transicao.TransicaoDao;
+import com.logus.kaizen.model.apoio.transicao.TransicaoJpaDaoImpl;
 import com.logus.kaizen.model.apoio.urgencia.UrgenciaDao;
 import com.logus.kaizen.model.apoio.urgencia.UrgenciaJpaDaoImpl;
-import com.logus.kaizen.model.plano.PlanoDao;
-import com.logus.kaizen.model.plano.PlanoJpaDaoImpl;
-import com.logus.kaizen.model.processo.ProcessoDao;
-import com.logus.kaizen.model.processo.ProcessoJpaDaoImpl;
-import com.logus.kaizen.model.projeto.ProjetoDao;
-import com.logus.kaizen.model.projeto.ProjetoJpaDaoImpl;
-import com.logus.kaizen.model.resolucao.ResolucaoDao;
-import com.logus.kaizen.model.resolucao.ResolucaoJpaDaoImpl;
+import com.logus.kaizen.model.auditoria.GrupoMudancaDao;
+import com.logus.kaizen.model.auditoria.GrupoMudancaJpaDaoImpl;
+import com.logus.kaizen.model.auditoria.ItemMudancaDao;
+import com.logus.kaizen.model.auditoria.ItemMudancaJpaDaoImpl;
+import com.logus.kaizen.model.chronos.ChronosDao;
+import com.logus.kaizen.model.chronos.ChronosJpaDaoImpl;
+import com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracaoDao;
+import com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracaoJpaDaoImpl;
+import com.logus.kaizen.model.kotae.plano.PlanoDao;
+import com.logus.kaizen.model.kotae.plano.PlanoJpaDaoImpl;
+import com.logus.kaizen.model.solicitacao.ComentarioDao;
+import com.logus.kaizen.model.solicitacao.ComentarioJpaDaoImpl;
+import com.logus.kaizen.model.solicitacao.ItemSolicitacaoDao;
+import com.logus.kaizen.model.solicitacao.ItemSolicitacaoJpaDaoImpl;
 import com.logus.kaizen.model.solicitacao.SolicitacaoDao;
 import com.logus.kaizen.model.solicitacao.SolicitacaoJpaDaoImpl;
-import com.logus.kaizen.model.transicao.TransicaoDao;
-import com.logus.kaizen.model.transicao.TransicaoJpaDaoImpl;
 
 /**
  *
@@ -60,6 +86,22 @@ public class ApoioDataServiceImpl extends ApoioDataService {
 			emf = (EntityManagerFactory) Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		}
 		return emf;
+	}
+
+	public DataAccessObject<?> getDao(Object object) {
+		DataAccessObject<?> daoObject = null;
+		try {
+			String nomeEntidade = object.getClass().getTypeName();
+			nomeEntidade = nomeEntidade.substring(nomeEntidade.lastIndexOf(".") + 1, nomeEntidade.length());
+			String nomeMetodo = "get" + nomeEntidade + "Dao";
+			Method metodo = ApoioDataServiceImpl.class.getMethod(nomeMetodo);
+			System.out.println(nomeEntidade);
+			daoObject = (DataAccessObject<?>) metodo.invoke(this);
+			System.out.println(daoObject);
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+		}
+		return daoObject;
 	}
 
 	@Override
@@ -125,6 +167,66 @@ public class ApoioDataServiceImpl extends ApoioDataService {
 	@Override
 	public TipoMondaiDao getTipoMondaiDao() {
 		return TipoMondaiJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public ChronosDao getToguruDao() {
+		return ChronosJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public FuncaoDao getFuncaoDao() {
+		return FuncaoJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public TipoMondaiProjetoDao getTipoMondaiProjetoDao() {
+		return TipoMondaiProjetoJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public KotaeConfiguracaoDao getKotaeConfiguracaoDao() {
+		return KotaeConfiguracaoJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public ChronosDao geToguruDao() {
+		return ChronosJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public PapelDao getPapelDao() {
+		return PapelJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public ItemFuncaoDao getItemFuncaoDao() {
+		return ItemFuncaoJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public ItemPapelDao getItemPapelDao() {
+		return ItemPapelJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public ComentarioDao getComentariosDao() {
+		return ComentarioJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public ItemSolicitacaoDao getItemSolicitacaoDao() {
+		return ItemSolicitacaoJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public ItemMudancaDao getItemMudancaDao() {
+		return ItemMudancaJpaDaoImpl.getInstance();
+	}
+
+	@Override
+	public GrupoMudancaDao getGrupoMudancaDao() {
+		return GrupoMudancaJpaDaoImpl.getInstance();
 	}
 
 }

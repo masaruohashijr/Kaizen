@@ -12,8 +12,8 @@ import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.translation.CustosTranslator;
 import com.logus.core.model.persistence.Assignable;
+import com.logus.kaizen.model.translation.CustosTranslator;
 
 /**
  * Centros de Custo são informações sobre para as quais se deseja apurar o

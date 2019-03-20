@@ -5,9 +5,10 @@ package com.logus.kaizen.model.apoio.produto;
 
 import java.util.Collection;
 
-import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.persistence.jpa.AbstractJpaDao;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -37,7 +38,7 @@ implements ProdutoDao {
 
   @Override
   public Collection<Produto> loadProdutos() {
-	  return loadCollection("seq_produto, nom_produto, flg_ativo",Produto.TABLE_NAME, "flg_ativo = ?", "nom_produto", Boolean.TRUE);
+	  return loadCollection("seq_produto, nom_produto, flg_ativo",TableNames.TB_PRODUTO, "flg_ativo = ?", "nom_produto", Boolean.TRUE);
   }
 
   /* (non-Javadoc)
@@ -53,7 +54,7 @@ implements ProdutoDao {
    */
   @Override
   public String getTableName() {
-    return Produto.TABLE_NAME;
+    return TableNames.TB_PRODUTO;
   }
 
   /* (non-Javadoc)

@@ -1,9 +1,9 @@
 package com.logus.kaizen.view.matrizrateio;
 
-import com.logus.kaizen.model.matrizrateio.MatrizRateio;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.translation.TM;
 import com.logus.core.view.list.BeanGrid;
+import com.logus.kaizen.model.matrizrateio.MatrizRateio;
+import com.logus.kaizen.model.translation.KaizenTranslator;
 
 /**
  * {@link BeanGrid} para {@link MatrizRateio}.

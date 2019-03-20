@@ -1,9 +1,9 @@
 package com.logus.kaizen.view.centrocusto;
 
-import com.logus.kaizen.model.centrocusto.CentroCusto;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.translation.TM;
 import com.logus.core.view.form.BeanForm;
+import com.logus.kaizen.model.centrocusto.CentroCusto;
+import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.vaadin.flow.component.Component;
 
 /**

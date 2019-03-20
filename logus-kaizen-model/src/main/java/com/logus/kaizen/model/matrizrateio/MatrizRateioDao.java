@@ -2,8 +2,8 @@ package com.logus.kaizen.model.matrizrateio;
 
 import java.util.Collection;
 
-import com.logus.kaizen.model.matrizrateio.MatrizRateio.TipoMatriz;
 import com.logus.core.model.persistence.DataAccessObject;
+import com.logus.kaizen.model.matrizrateio.MatrizRateio.TipoMatriz;
 
 /**
  * Serviços de persistência para {@link MatrizRateio}.

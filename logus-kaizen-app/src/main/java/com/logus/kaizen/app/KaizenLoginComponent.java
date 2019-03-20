@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 import com.logus.core.model.aut.login.LoginException;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.view.app.LoginComponent;
-import com.logus.kaizen.view.solicitacao.SolicitacaoPage;
+import com.logus.kaizen.view.mondai.SolicitacaoPage;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
@@ -56,7 +56,11 @@ public class KaizenLoginComponent extends LoginComponent {
 						field.setAccessible(true);
 						Object obj = field.get(objectParm);
 						Method method = clazz.getMethod("setValue", String.class);
-						method.invoke(obj, properties.getString(LOGIN_USERNAME));
+						String login = properties.getString(LOGIN_USERNAME);
+						if(login.contains("${login.username}")) {
+							login = "masaru";
+						}
+						method.invoke(obj, login);
 					} catch (NoSuchMethodException | SecurityException | IllegalAccessException
 							| IllegalArgumentException | InvocationTargetException e) {
 						throw new LoginException("Campo username inválido.", e);
@@ -68,7 +72,11 @@ public class KaizenLoginComponent extends LoginComponent {
 						field.setAccessible(true);
 						Object obj = field.get(objectParm);
 						Method method = clazz.getMethod("setValue", String.class);
-						method.invoke(obj, properties.getString(LOGIN_PASSORD));
+						String password = properties.getString(LOGIN_PASSORD);
+						if(password.contains("${login.password}")) {
+							password = "senha123";
+						}
+						method.invoke(obj, password);
 					} catch (NoSuchMethodException | SecurityException | IllegalAccessException
 							| IllegalArgumentException | InvocationTargetException e) {
 						throw new LoginException("Campo password inválido.", e);
@@ -78,5 +86,25 @@ public class KaizenLoginComponent extends LoginComponent {
 		}
 
 	}
+/*
+	@Override
+	public String getDescription() {
+		return "TESTE DESCRIÇÃO";
+	}
 
+	@Override
+	public String getImageBackgroundPath() {
+		return "";
+	}
+
+	@Override
+	public String getImagePath() {
+		return "";
+	}
+
+	@Override
+	public String getTitle() {
+		return "TESTE";
+	}
+*/
 }

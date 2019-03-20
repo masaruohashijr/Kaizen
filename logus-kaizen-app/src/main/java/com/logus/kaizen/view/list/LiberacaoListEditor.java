@@ -10,10 +10,6 @@ import java.util.stream.Stream;
 
 import javax.persistence.Entity;
 
-import com.logus.kaizen.model.apoio.ambiente.Ambiente;
-import com.logus.kaizen.model.plano.Liberacao;
-import com.logus.kaizen.view.edit.LiberacaoEditWindow;
-import com.logus.kaizen.view.plano.LiberacaoForm;
 import com.logus.core.model.dialog.DialogButtonType;
 import com.logus.core.model.list.ListEditorButtonType;
 import com.logus.core.model.persistence.Assignable;
@@ -27,6 +23,10 @@ import com.logus.core.view.exceptions.ExceptionHandler;
 import com.logus.core.view.form.FormLayoutUtil;
 import com.logus.core.view.list.BeanGrid;
 import com.logus.core.view.list.ListEditorButton;
+import com.logus.kaizen.model.apoio.ambiente.Ambiente;
+import com.logus.kaizen.model.kotae.plano.Liberacao;
+import com.logus.kaizen.view.edit.LiberacaoEditWindow;
+import com.logus.kaizen.view.kotae.plano.LiberacaoForm;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.Html;
@@ -548,7 +548,7 @@ public abstract class LiberacaoListEditor<T extends Object> extends VerticalLayo
 							getNomeEntidade(), obj));
 					toFocus.focus();
 				} else {
-					NotificationDialog.showError("Ambiente já selecionado. Para alterar a Urgência você deve selecionar o Item já cadastrado e acionar o botão 'Alterar'.");
+					NotificationDialog.showError("Ambiente já selecionado. Para alterar a Urgência, você deve selecionar o Item já cadastrado e acionar o botão 'Alterar'.");
 					return;
 				}
 			}
@@ -556,17 +556,19 @@ public abstract class LiberacaoListEditor<T extends Object> extends VerticalLayo
 			private boolean objExisteGrid(Liberacao obj) {
 				boolean existe = false;
 				List<Liberacao> items = grid.getItems();
+				Ambiente ambienteObj = obj.getAmbiente();
+				String nomeClienteObj = ambienteObj.getCliente().getNome();
+				String nomeAmbienteObj = ambienteObj.getNome();
+				String nmObj = nomeClienteObj + nomeAmbienteObj;
 				for (Liberacao liberacao : items) {
-					Ambiente ambienteObj = obj.getAmbiente();
-					String nomeClienteObj = ambienteObj.getCliente().getNome();
-					String nomeAmbienteObj = ambienteObj.getNome();
-					String nmObj = nomeClienteObj + nomeAmbienteObj;
 					Ambiente ambienteItem = liberacao.getAmbiente();
 					String nomeClienteItem = ambienteItem.getCliente().getNome();
 					String nomeAmbienteItem = ambienteItem.getNome();
 					String nmItem = nomeClienteItem + nomeAmbienteItem;
 					existe = Objects.equals(nmObj, nmItem);
-					break;
+					if(existe) {
+						break;
+					}
 				}
 				return existe;
 			}

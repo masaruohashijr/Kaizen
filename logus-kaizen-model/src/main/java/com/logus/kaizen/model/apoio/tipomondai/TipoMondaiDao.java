@@ -14,4 +14,6 @@ import com.logus.core.model.persistence.DataAccessObject;
  */
 public interface TipoMondaiDao extends DataAccessObject<TipoMondai>{
     Collection<TipoMondai> loadTiposMondai();
+
+    Collection<TipoMondai> loadTiposMondaiSemProcesso();
 }

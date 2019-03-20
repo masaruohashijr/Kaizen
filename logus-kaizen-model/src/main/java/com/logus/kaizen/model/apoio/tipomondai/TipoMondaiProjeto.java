@@ -3,26 +3,33 @@
  */
 package com.logus.kaizen.model.apoio.tipomondai;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.processo.Processo;
-import com.logus.kaizen.model.projeto.Projeto;
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.persistence.Assignable;
+import com.logus.core.model.persistence.CollectionSynchronizer;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.processo.Processo;
+import com.logus.kaizen.model.apoio.projeto.Projeto;
+import com.logus.kaizen.model.translation.KaizenTranslator;
+import com.logus.kaizen.model.util.YokaiListener;
+
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -31,10 +38,10 @@ import com.logus.core.model.persistence.Assignable;
  *
  */
 @Entity
-@Table(name = TipoMondaiProjeto.NOME_TABELA_TIPO_MONDAI_PROJETO)
+@EntityListeners(YokaiListener.class)
+@Table(name = TipoMondaiProjeto.TB_TIPO_MONDAI_PROJETO)
 
-public class TipoMondaiProjeto implements Assignable<TipoMondaiProjeto> {
-	public static final String NOME_TABELA_TIPO_MONDAI_PROJETO = "KZ_TIPO_MONDAI_PROJETO";
+public class TipoMondaiProjeto implements Assignable<TipoMondaiProjeto>, TableNames {
 
 	@Id
 	@TableGenerator(name = "seq_tipo_mondai_projeto", initialValue = 1, allocationSize = 1)
@@ -42,18 +49,21 @@ public class TipoMondaiProjeto implements Assignable<TipoMondaiProjeto> {
 	@Column(name = "seq_tipo_mondai_projeto")
 	private Long id;
 
-	@JoinColumn(name = "seq_processo",
-			    referencedColumnName = "seq_processo", nullable = false)
+	@JoinColumn(name = "seq_processo", referencedColumnName = "seq_processo", nullable = false)
 	@ManyToOne(optional = false)
 	private Processo processo;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "seq_tipo_mondai", referencedColumnName = "seq_tipo_mondai", nullable = false)
+	@NotNull(message = KaizenTranslator.SOLICITACAO_TIPO_MONDAI_OBRIGATORIO)
 	private TipoMondai tipoMondai;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "seq_projeto", referencedColumnName = "seq_projeto", nullable = false)
 	private Projeto projeto;
+
+	@OneToMany(mappedBy = "tipoMondaiProjeto", targetEntity = PapelPassoItem.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<PapelPassoItem> papeisPassosItens = new ArrayList<PapelPassoItem>();
 
 	@Column(name = "flg_ativo", nullable = false)
 	private boolean ativo = Boolean.TRUE;
@@ -77,6 +87,7 @@ public class TipoMondaiProjeto implements Assignable<TipoMondaiProjeto> {
 		this.processo = tipoMondaiProjeto.getProcesso();
 		this.projeto = tipoMondaiProjeto.getProjeto();
 		this.tipoMondai = tipoMondaiProjeto.getTipoMondai();
+		CollectionSynchronizer.synchronize(tipoMondaiProjeto.papeisPassosItens, this.papeisPassosItens, papelPassoItem -> papelPassoItem.setTipoMondaiProjeto(this));
 		return this;
 	}
 
@@ -155,4 +166,19 @@ public class TipoMondaiProjeto implements Assignable<TipoMondaiProjeto> {
 	public void setTipoMondai(TipoMondai tipoMondai) {
 		this.tipoMondai = tipoMondai;
 	}
+
+	public Collection<PapelPassoItem> getPapeisPassosItens() {
+		return papeisPassosItens;
+	}
+
+	public void setPapeisPassosItens(Collection<PapelPassoItem> papeisPassosItens) {
+		this.papeisPassosItens = papeisPassosItens;
+	}
+
+	@Override
+	public String toString() {
+		return ((null!=this.tipoMondai)?this.tipoMondai:"") + " - "+((null!=this.processo)?this.processo:"");
+	}
+
+
 }

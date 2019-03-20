@@ -5,9 +5,9 @@ package com.logus.kaizen.model.apoio.biblioteca;
 
 import java.util.Collection;
 
-import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.persistence.jpa.AbstractJpaDao;
+import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 
 /**
  *
@@ -57,7 +57,7 @@ public class BibliotecaJpaDaoImpl extends AbstractJpaDao<Biblioteca> implements 
 	 */
 	@Override
 	public String getTableName() {
-		return Biblioteca.TABLE_BIBLIOTECA;
+		return Biblioteca.TB_BIBLIOTECA;
 	}
 
 	/*

@@ -5,9 +5,10 @@ package com.logus.kaizen.model.apoio.tipomondai;
 
 import java.util.Collection;
 
-import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.persistence.jpa.AbstractJpaDao;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 
 /**
  *
@@ -57,7 +58,7 @@ public class TipoMondaiJpaDaoImpl extends AbstractJpaDao<TipoMondai> implements 
 	 */
 	@Override
 	public String getTableName() {
-		return TipoMondai.NOME_TABELA_TIPO_MONDAI;
+		return TableNames.TB_TIPO_MONDAI;
 	}
 
 	/*
@@ -79,5 +80,12 @@ public class TipoMondaiJpaDaoImpl extends AbstractJpaDao<TipoMondai> implements 
 	protected boolean queryEnabled() {
 		return LoginManager.getAccessControl().hasAccess(FuncionalidadeTipoMondai.FUNC_TIPO_MONDAI_CONSULTAR.getId());
 	}
+
+	@Override
+	public Collection<TipoMondai> loadTiposMondaiSemProcesso() {
+		return loadCollectionByFilter("seq_processo IS NULL");
+	}
+
+
 
 }

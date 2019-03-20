@@ -1,5 +1,6 @@
 package com.logus.kaizen.app;
 
+import com.logus.core.model.dialog.DialogButtonType;
 import com.logus.core.view.list.ListViewPage;
 
 /**
@@ -14,5 +15,9 @@ import com.logus.core.view.list.ListViewPage;
 @SuppressWarnings("serial")
 public abstract class KaizenAbstractPage<T extends Object>
   extends ListViewPage<T> {
+
+	public KaizenAbstractPage(DialogButtonType dialogButtonType) {
+		super(dialogButtonType);
+	}
 
 }

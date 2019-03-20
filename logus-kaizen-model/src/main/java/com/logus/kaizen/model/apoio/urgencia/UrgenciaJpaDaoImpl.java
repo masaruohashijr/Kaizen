@@ -5,9 +5,10 @@ package com.logus.kaizen.model.apoio.urgencia;
 
 import java.util.Collection;
 
-import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.persistence.jpa.AbstractJpaDao;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -37,7 +38,7 @@ implements UrgenciaDao {
 
   @Override
   public Collection<Urgencia> loadUrgencias() {
-    return loadCollection("seq_urgencia, nom_urgencia, flg_ativo",Urgencia.TABLE_NAME, "flg_ativo = ?", "nom_urgencia", Boolean.TRUE);
+    return loadCollection("seq_urgencia, nom_urgencia, flg_ativo",TableNames.TB_URGENCIA, "flg_ativo = ?", "nom_urgencia", Boolean.TRUE);
   }
 
   /* (non-Javadoc)
@@ -53,7 +54,7 @@ implements UrgenciaDao {
    */
   @Override
   public String getTableName() {
-    return Urgencia.TABLE_NAME;
+    return TableNames.TB_URGENCIA;
   }
 
   /* (non-Javadoc)

@@ -2,9 +2,9 @@ package com.logus.kaizen.model.apoio.ambiente;
 
 import java.util.Collection;
 
-import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.persistence.jpa.AbstractJpaDao;
+import com.logus.kaizen.model.apoio.ApoioDataServiceImpl;
 
 /**
  *
@@ -35,7 +35,7 @@ public class AmbienteJpaDaoImpl extends AbstractJpaDao<Ambiente> implements Ambi
 
 	@Override
 	public String getTableName() {
-		return Ambiente.TABLE_NAME;
+		return Ambiente.TB_AMBIENTE;
 	}
 
 	@Override

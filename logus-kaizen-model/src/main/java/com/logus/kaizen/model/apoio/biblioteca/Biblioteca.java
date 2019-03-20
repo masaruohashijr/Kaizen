@@ -7,17 +7,24 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
-import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.core.model.persistence.Assignable;
+import com.logus.kaizen.model.TableNames;
+import com.logus.kaizen.model.solicitacao.Solicitacao;
+import com.logus.kaizen.model.translation.KaizenTranslator;
+import com.logus.kaizen.model.util.YokaiListener;
+
 /**
  *
  * @author Masaru Ohashi Júnior
@@ -26,10 +33,10 @@ import com.logus.core.model.persistence.Assignable;
  *
  */
 @Entity
-@Table(name = Biblioteca.TABLE_BIBLIOTECA)
+@EntityListeners(YokaiListener.class)
+@Table(name = Biblioteca.TB_BIBLIOTECA)
 
-public class Biblioteca implements Assignable<Biblioteca> {
-	public static final String TABLE_BIBLIOTECA = "KZ_BIBLIOTECA";
+public class Biblioteca implements Assignable<Biblioteca>, TableNames {
 
 	@Id
 	@TableGenerator(name = "seq_biblioteca", initialValue = 1, allocationSize = 1)
@@ -46,6 +53,11 @@ public class Biblioteca implements Assignable<Biblioteca> {
 	@Size(min = 0, max = 1200, message = KaizenTranslator.BIBLIOTECA_TAMANHO_DESCRICAO)
 	@Null
 	private String descricao;
+
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "seq_solicitacao", referencedColumnName = "seq_solicitacao", nullable = true)
+	@Null
+	private Solicitacao solicitacao;
 
 	@Column(name = "flg_ativo", nullable = false)
 	private boolean ativo = Boolean.TRUE;
@@ -68,6 +80,7 @@ public class Biblioteca implements Assignable<Biblioteca> {
 		this.nome = biblioteca.getNome();
 		this.descricao = biblioteca.getDescricao();
 		this.ativo = biblioteca.isAtivo();
+		this.solicitacao = biblioteca.getSolicitacao();
 		return this;
 	}
 
@@ -149,6 +162,14 @@ public class Biblioteca implements Assignable<Biblioteca> {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public Solicitacao getSolicitacao() {
+		return solicitacao;
+	}
+
+	public void setSolicitacao(Solicitacao solicitacao) {
+		this.solicitacao = solicitacao;
 	}
 
 }

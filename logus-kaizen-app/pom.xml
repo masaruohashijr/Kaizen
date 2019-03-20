@@ -23,7 +23,7 @@
 		<log4j.root.logger>${app.log.level}, CONSOLE, LOGFILE</log4j.root.logger>
 		<log4j.log.console>
 		</log4j.log.console>
-		<log4j.path>/tmp/logs/controle-deploys</log4j.path>
+		<log4j.path>/tmp/logs/kaizen</log4j.path>
 		<log4j.logfile.path>${log4j.path}/${build.finalName}.log</log4j.logfile.path>
 		<log.cache.level>INFO</log.cache.level>
 		<vaadin.version>12.0.0</vaadin.version>
@@ -215,13 +215,13 @@
 			</activation>
 			<properties>
 				<!-- WAR Name -->
-				<project.build.finalName>ControleDeploysApp</project.build.finalName>
+				<project.build.finalName>KaizenApp</project.build.finalName>
 
-				<app.controle-deploys.driverClassName>org.postgresql.Driver</app.controle-deploys.driverClassName>
-				<app.controle-deploys.database>jdbc:postgresql://127.0.0.1:5432/kaizen</app.controle-deploys.database>
-				<app.controle-deploys.username>logus</app.controle-deploys.username>
-				<app.controle-deploys.password>logus</app.controle-deploys.password>
-				<app.controle-deploys.schema>kaizen</app.controle-deploys.schema>
+				<app.kaizen.driverClassName>org.postgresql.Driver</app.kaizen.driverClassName>
+				<app.kaizen.database>jdbc:postgresql://127.0.0.1:5432/kaizen</app.kaizen.database>
+				<app.kaizen.username>logus</app.kaizen.username>
+				<app.kaizen.password>logus</app.kaizen.password>
+				<app.kaizen.schema>kaizen</app.kaizen.schema>
 
 				<app.sec.driverClassName>org.postgresql.Driver</app.sec.driverClassName>
 				<app.sec.database>jdbc:postgresql://127.0.0.1:5432/divida</app.sec.database>
