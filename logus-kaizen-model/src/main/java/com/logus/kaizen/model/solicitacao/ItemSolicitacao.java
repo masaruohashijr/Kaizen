@@ -25,7 +25,6 @@ import com.logus.kaizen.model.TableNames;
 import com.logus.kaizen.model.apoio.ambiente.Ambiente;
 import com.logus.kaizen.model.apoio.atendimento.Atendimento;
 import com.logus.kaizen.model.apoio.urgencia.Urgencia;
-import com.logus.kaizen.model.kotae.plano.Plano;
 import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.kaizen.model.util.YokaiListener;
 

@@ -63,7 +63,7 @@ public class CentroCustoJpaDaoImpl
 
   @Override
   public Collection<CentroCusto> loadAtivos() {
-    return loadCollectionByFilter("flg_ativo = ?", 1);
+    return loadCollectionByFilter("flg_ativo = ?", Boolean.TRUE);
   }
 
 }

@@ -259,11 +259,13 @@ public class ChronosPage extends KaizenAbstractListEditor<Chronos> {
 					BeanGrid<Solicitacao> gridSolicitacoes = solicitacoesSelector.getGrid();
 					Set<Solicitacao> selectedSolicitacoes = gridSolicitacoes.getSelectedItems();
 					Object[] array = selectedSolicitacoes.toArray();
-					if(array.length==0) {
+					if(array.length==0 && Strings.isEmpty(chronos.getTituloChronos())) {
 						throw new PersistenceException(TM.translate(KaizenTranslator.CHRONOS_SOLICITACAO_OBRIGATORIA));
 					}
-					Solicitacao solicitacao = (Solicitacao) array[0];
-					chronos.setSolicitacao(solicitacao);
+					if(array.length > 0) {
+						Solicitacao solicitacao = (Solicitacao) array[0];
+						chronos.setSolicitacao(solicitacao);
+					}
 					if (!readOnly) {
 						if (null != atribuicaoPassoItem) {
 							Atendimento atendimentoOrigem = null;

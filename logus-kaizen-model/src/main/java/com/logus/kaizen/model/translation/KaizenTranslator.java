@@ -361,6 +361,8 @@ public class KaizenTranslator extends AbstractMapTranslator {
 	public static final String CHRONOS_TERMINADO = "CHRONOS_TERMINADO";
 	public static final String CHRONOS_DATA_INICIO = "CHRONOS_DATA_INICIO";
 	public static final String CHRONOS_DATA_FIM = "CHRONOS_DATA_FIM";
+	public static final String CHRONOS_TITULO = "CHRONOS_TITULO";
+	public static final String CHRONOS_TITULO_TAMANHO = "CHRONOS_TITULO_TAMANHO";
 	public static final String CHRONOS_RESPONSAVEL = "CHRONOS_RESPONSAVEL";
 	public static final String CHRONOS_RESPONSAVEL_TAMANHO = "CHRONOS_RESPONSAVEL_TAMANHO";
 	public static final String CHRONOS_RESPONSAVEL_OBRIGATORIO = "CHRONOS_RESPONSAVEL_OBRIGATORIO";
@@ -756,6 +758,8 @@ public class KaizenTranslator extends AbstractMapTranslator {
 		put(CHRONOS_TERMINO, "Término");
 		put(CHRONOS_INICIADO, "Chronos Iniciado");
 		put(CHRONOS_TERMINADO, "Chronos Terminado");
+		put(CHRONOS_TITULO, "Atividade");
+		put(CHRONOS_TITULO_TAMANHO, "A Atividade deve possuir entre {0} e {1} caracteres.");
 		put(CHRONOS_RESPONSAVEL, "Responsável");
 		put(CHRONOS_RESPONSAVEL_TAMANHO, "O Responsável deve possuir entre {0} e {1} caracteres.");
 		put(CHRONOS_RESPONSAVEL_OBRIGATORIO, "Informe o Responsável pela Atividade.");

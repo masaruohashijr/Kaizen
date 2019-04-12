@@ -26,6 +26,7 @@ import com.logus.core.model.persistence.Assignable;
 import com.logus.core.model.util.Formats;
 import com.logus.kaizen.model.TableNames;
 import com.logus.kaizen.model.apoio.atendimento.Atendimento;
+import com.logus.kaizen.model.apoio.projeto.Projeto;
 import com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracao;
 import com.logus.kaizen.model.solicitacao.Solicitacao;
 import com.logus.kaizen.model.translation.KaizenTranslator;
@@ -40,16 +41,16 @@ import com.logus.kaizen.model.util.YokaiListener;
  */
 @Entity
 @EntityListeners(YokaiListener.class)
-@Table(name = Chronos.TB_TOGURU)
+@Table(name = Chronos.TB_CHRONOS)
 public class Chronos implements Assignable<Chronos>, TableNames {
 
 	/**
 	 * Id
 	 */
 	@Id
-	@TableGenerator(name = "seq_toguru", initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_toguru")
-	@Column(name = "seq_toguru")
+	@TableGenerator(name = "seq_chronos", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "seq_chronos")
+	@Column(name = "seq_chronos")
 	private Long id;
 
 	/**
@@ -83,6 +84,14 @@ public class Chronos implements Assignable<Chronos>, TableNames {
 	private boolean ativo = Boolean.TRUE;
 
 	/**
+	 * Projeto
+	 */
+	@ManyToOne
+	@JoinColumn(name = "seq_projeto", referencedColumnName = "seq_projeto", nullable = true)
+	@Null
+	private Projeto projeto;
+
+	/**
 	 * Solicitação
 	 */
 	@ManyToOne
@@ -106,12 +115,19 @@ public class Chronos implements Assignable<Chronos>, TableNames {
 	@Null
 	private Atendimento atendimento;
 
+	/**
+	 * Título da Atividade
+	 */
+	@Column(name = "tit_chronos", length = 120, nullable = true)
+	@Size(min = 0, max = 120, message = KaizenTranslator.CHRONOS_TITULO_TAMANHO)
+	private String tituloChronos;
+
 
 	public Chronos() {
 	}
 
-	public Chronos(Chronos toguru) {
-		assignFrom(toguru);
+	public Chronos(Chronos chronos) {
+		assignFrom(chronos);
 	}
 
 	/*
@@ -120,15 +136,17 @@ public class Chronos implements Assignable<Chronos>, TableNames {
 	 * @see com.logus.core.model.persistence.Assignable#assignFrom(java.lang.Object)
 	 */
 	@Override
-	public Chronos assignFrom(Chronos toguru) {
-		this.id = toguru.id;
-		this.ativo = toguru.ativo;
-		this.codigoResponsavel = toguru.codigoResponsavel;
-		this.dataInicio = toguru.dataInicio;
-		this.dataFim = toguru.dataFim;
-		this.solicitacao = toguru.solicitacao;
-		this.configuracao = toguru.configuracao;
-		this.atendimento = toguru.atendimento;
+	public Chronos assignFrom(Chronos chronos) {
+		this.id = chronos.id;
+		this.ativo = chronos.ativo;
+		this.codigoResponsavel = chronos.codigoResponsavel;
+		this.dataInicio = chronos.dataInicio;
+		this.dataFim = chronos.dataFim;
+		this.solicitacao = chronos.solicitacao;
+		this.tituloChronos = chronos.tituloChronos;
+		this.projeto = chronos.projeto;
+		this.configuracao = chronos.configuracao;
+		this.atendimento = chronos.atendimento;
 		return this;
 	}
 
@@ -196,7 +214,13 @@ public class Chronos implements Assignable<Chronos>, TableNames {
 
 	@Override
 	public String toString() {
-		return "[ " + Formats.getDateTimeFormat().format(dataInicio) + " " + solicitacao + " ]";
+		String atividade = "";
+		if(null != solicitacao) {
+			atividade = solicitacao.toString();
+		} else {
+			atividade = tituloChronos;
+		}
+		return "[ " + Formats.getDateTimeFormat().format(dataInicio) + " " + atividade + " ]";
 	}
 
 	public KotaeConfiguracao getConfiguracao() {
@@ -262,4 +286,22 @@ public class Chronos implements Assignable<Chronos>, TableNames {
 		this.solicitacao = solicitacao;
 		return this;
 	}
+
+	public Projeto getProjeto() {
+		return projeto;
+	}
+
+	public void setProjeto(Projeto projeto) {
+		this.projeto = projeto;
+	}
+
+	public String getTituloChronos() {
+		return tituloChronos;
+	}
+
+	public void setTituloChronos(String tituloChronos) {
+		this.tituloChronos = tituloChronos;
+	}
+
+
 }

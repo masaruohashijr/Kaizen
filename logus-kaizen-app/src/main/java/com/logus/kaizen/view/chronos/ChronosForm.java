@@ -17,6 +17,7 @@ import com.logus.core.view.form.BeanForm;
 import com.logus.core.view.form.ListSelector;
 import com.logus.kaizen.app.KaizenListSelector;
 import com.logus.kaizen.model.apoio.ApoioDataService;
+import com.logus.kaizen.model.apoio.projeto.Projeto;
 import com.logus.kaizen.model.chronos.Chronos;
 import com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracao;
 import com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracao.TipoKotae;
@@ -47,6 +48,7 @@ public class ChronosForm extends BeanForm<Chronos> {
 	private BeanComboBox<KotaeConfiguracao> cbConfig;
 	private TextField tfDataInicio;
 	private TextField tfDataFim;
+	private BeanComboBox<Projeto> projetoCB;
 
 	/**
 	 * Método construtor
@@ -55,22 +57,59 @@ public class ChronosForm extends BeanForm<Chronos> {
 	 */
 	protected ChronosForm(Chronos toguru) {
 		super(toguru);
-		HorizontalLayout hLayout = new HorizontalLayout();
-		hLayout.add(fullWidth(createDataInicioTextField()));
-		hLayout.add(fullWidth(createDataFimTextField()));
-		hLayout.add(fullWidth(createResponsavelTextFieldEdit()));
-		hLayout.add(fullWidth(createConfiguracaoComboBoxEdit()));
+		HorizontalLayout hLayout1 = new HorizontalLayout();
+		hLayout1.add(focus(fullWidth(createTituloTextField())));
+		hLayout1.add(fullWidth(createProjetoBeanComboBox()));
+		hLayout1.setWidth("100%");
+		add(hLayout1);
+		HorizontalLayout hLayout2 = new HorizontalLayout();
+		hLayout2.add(fullWidth(createDataInicioTextField()));
+		hLayout2.add(fullWidth(createDataFimTextField()));
+		hLayout2.add(fullWidth(createResponsavelTextFieldEdit()));
+		hLayout2.add(fullWidth(createConfiguracaoComboBoxEdit()));
 		Collection<Solicitacao> selecteds = new ArrayList<>();
 		Solicitacao solicitacao = getObject().getSolicitacao();
 		if (null != solicitacao) {
 			selecteds.add(solicitacao);
 		}
-		hLayout.setWidth("100%");
+		hLayout2.setWidth("100%");
 		ListSelector<Solicitacao> solicitacoesSelector = createSolicitacoesSelector(selecteds);
-		add(hLayout);
+		add(hLayout2);
 		add(fullSize(solicitacoesSelector));
 		add(createAtivoCheckBox());
 	}
+
+	private Component createTituloTextField() {
+		TextField tituloChronos = createTextField(TM.translate(KaizenTranslator.CHRONOS_TITULO), "tituloChronos");
+		tituloChronos.addBlurListener(listener->{
+			if(!Strings.isEmpty(listener.getSource().getValue())) {
+				projetoCB.setEnabled(true);
+				focus(projetoCB);
+				solicitacoesSelector.setEnabled(false);
+			} else {
+				projetoCB.setEnabled(false);
+				solicitacoesSelector.setEnabled(true);
+			}
+		});
+		return tituloChronos;
+	}
+
+	private Component createProjetoBeanComboBox() {
+		projetoCB = createBeanComboBox(TM.translate(KaizenTranslator.PROJETO), "projeto",
+				ApoioDataService.get().getProjetoDao().loadProjetos());
+		if(null == getObject().getId()) {
+			projetoCB.setEnabled(false);
+		}
+		projetoCB.addValueChangeListener(listener -> {
+			if(!Strings.isEmpty(listener.getSource().getValue())) {
+				solicitacoesSelector.setEnabled(false);
+			} else {
+				solicitacoesSelector.setEnabled(true);
+			}
+		});
+		return projetoCB;
+	}
+
 
 	private ListSelector<Solicitacao> createSolicitacoesSelector(Collection<Solicitacao> selecteds) {
 		Collection<Solicitacao> selectedObjects = new LinkedList<>();

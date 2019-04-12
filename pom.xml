@@ -14,6 +14,7 @@
 
 	<modules>
 		<module>logus-kaizen-app</module>
+		<module>logus-kaizen-view</module>
 		<module>logus-kaizen-model</module>
 	</modules>
 

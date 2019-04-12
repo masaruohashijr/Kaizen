@@ -23,7 +23,7 @@ import com.logus.kaizen.model.solicitacao.Solicitacao;
 import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.kaizen.view.form.KaizenTabSheet;
 import com.logus.kaizen.view.list.LiberacaoListEditor;
-import com.logus.kaizen.view.mondai.ItemSolicitacaoGrid;
+import com.logus.kaizen.view.mondai.ItemSolicitacaoPlanoGrid;
 import com.logus.kaizen.view.mondai.SolicitacaoPlanoGrid;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -245,7 +245,7 @@ public class PlanoForm extends BeanForm<Plano> {
 				 break;
 			}
 		}
-		ListSelector<ItemSolicitacao> solicitacoesSelector = createListSelector("", new ItemSolicitacaoGrid(),
+		ListSelector<ItemSolicitacao> solicitacoesSelector = createListSelector("", new ItemSolicitacaoPlanoGrid(),
 				ApoioDataService.get().getItemSolicitacaoDao().loadItensSolicitacao(), srcSolicitacao.getItensSolicitacao());
 		Component component = solicitacoesSelector.getComponentAt(0);
 		Element tfElement = component.getElement();

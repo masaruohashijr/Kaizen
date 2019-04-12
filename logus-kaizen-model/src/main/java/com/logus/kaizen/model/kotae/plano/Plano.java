@@ -35,7 +35,6 @@ import com.logus.kaizen.model.TableNames;
 import com.logus.kaizen.model.apoio.atendimento.Atendimento;
 import com.logus.kaizen.model.apoio.resolucao.Resolucao;
 import com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracao;
-import com.logus.kaizen.model.solicitacao.ItemSolicitacao;
 import com.logus.kaizen.model.solicitacao.Solicitacao;
 import com.logus.kaizen.model.translation.KaizenTranslator;
 import com.logus.kaizen.model.util.YokaiListener;

@@ -36,7 +36,7 @@ public class ChronosGrid extends BeanGrid<Chronos> {
 	public ChronosGrid() {
 		addColumn(data -> StringUtils.capitalize(data.getCodigoResponsavel())).setFlexGrow(1).setHeader("Responsável")
 				.setSortable(true);
-		addColumn(Chronos::getSolicitacao).setFlexGrow(3).setHeader(TM.translate(KaizenTranslator.MONDAI))
+		addColumn(data -> (null != data.getSolicitacao()) ? data.getSolicitacao() : data.getTituloChronos()).setFlexGrow(3).setHeader("Atividade")
 				.setSortable(true);
 		addColumn(Chronos::getAtendimento).setFlexGrow(1).setHeader("Status").setSortable(true);
 		addColumn(

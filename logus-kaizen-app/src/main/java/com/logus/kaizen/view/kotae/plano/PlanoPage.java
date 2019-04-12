@@ -3,14 +3,12 @@
  */
 package com.logus.kaizen.view.kotae.plano;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.dialog.DialogButtonType;
-import com.logus.core.model.persistence.CollectionSynchronizer;
 import com.logus.core.model.translation.CoreTranslator;
 import com.logus.core.model.translation.TM;
 import com.logus.core.view.dialog.YesNoDialog;
@@ -26,7 +24,6 @@ import com.logus.kaizen.model.apoio.atendimento.Atendimento;
 import com.logus.kaizen.model.apoio.processo.Passo;
 import com.logus.kaizen.model.apoio.resolucao.Resolucao;
 import com.logus.kaizen.model.apoio.tipomondai.AbstractAtribuicaoPassoItem;
-import com.logus.kaizen.model.apoio.urgencia.Urgencia;
 import com.logus.kaizen.model.kotae.configuracao.KotaeConfiguracao;
 import com.logus.kaizen.model.kotae.plano.Liberacao;
 import com.logus.kaizen.model.kotae.plano.Plano;
@@ -51,7 +48,6 @@ import com.vaadin.flow.router.Route;
 @Route(value = "plano", layout = KaizenMainLayout.class)
 public class PlanoPage extends KaizenAbstractListEditor<Plano> {
 
-//	private Urgencia urgencia;
 	/*
 	 * Construtor
 	 */
@@ -305,31 +301,31 @@ public class PlanoPage extends KaizenAbstractListEditor<Plano> {
 		Collection<Solicitacao> solicitacoes = plano.getSolicitacoes();
 		HashSet<Ambiente> ambientesSet = new HashSet<>();
 		Collection<Liberacao> liberacoes = plano.getLiberacoes();
+
+		// Carrega as liberações selecionadas pelo deployer.
 		for (Liberacao liberacao : liberacoes) {
 			ambientesSet.add(liberacao.getAmbiente());
 		}
+
+		// Itera cada uma das solicitações
 		for (Solicitacao solicitacao : solicitacoes) {
 			HashSet<Ambiente> copiaAmbientesSet = new HashSet<>(ambientesSet);
-			Collection<ItemSolicitacao> itensSolicitacao = new ArrayList<>();
+			Collection<ItemSolicitacao> itensSolicitacao = solicitacao.getItensSolicitacao();
+
+			// Itera o arraylist contendo todos os itens de solicitação
+			// de cada solicitação.
 			for (ItemSolicitacao item: itensSolicitacao) {
 				Ambiente ambienteSolicitado = item.getAmbiente();
 				if(copiaAmbientesSet.contains(ambienteSolicitado)) {
-					ItemSolicitacao itemSolicitacao = new ItemSolicitacao();
-					itemSolicitacao.setId(item.getId());
-					itemSolicitacao.setAmbiente(ambienteSolicitado);
-					itemSolicitacao.setAtendimento(atendimentoPlano);
-					itemSolicitacao.setDataUltimoAtendimento(new Date(System.currentTimeMillis()));
-					itemSolicitacao.setCodigoResponsavel(LoginManager.getAccessControl().getUser().getCodigo());
-					itemSolicitacao.setSolicitado(item.isSolicitado());
-					itemSolicitacao.setUrgencia(item.getUrgencia());
-//					itemSolicitacao.setPlano(item.getPlano());
+					item.setAtendimento(atendimentoPlano);
+					item.setDataUltimoAtendimento(new Date(System.currentTimeMillis()));
+					item.setCodigoResponsavel(LoginManager.getAccessControl().getUser().getCodigo());
 					copiaAmbientesSet.remove(ambienteSolicitado);
 				}
 			}
-			CollectionSynchronizer.synchronize(itensSolicitacao, solicitacao.getItensSolicitacao(), item -> {
-				item.setSolicitacao(solicitacao);
-//				urgencia = item.getUrgencia();
-			});
+//			CollectionSynchronizer.synchronize(itensSolicitacao, solicitacao.getItensSolicitacao(), item -> {
+//				item.setSolicitacao(solicitacao);
+//			});
 
 			Object[] array = copiaAmbientesSet.toArray();
 			for (int i = 0; i < array.length; i++) {
@@ -338,7 +334,6 @@ public class PlanoPage extends KaizenAbstractListEditor<Plano> {
 				itemSolicitacao.setAtendimento(atendimentoPlano);
 				itemSolicitacao.setDataUltimoAtendimento(new Date(System.currentTimeMillis()));
 				itemSolicitacao.setCodigoResponsavel(LoginManager.getAccessControl().getUser().getCodigo());
-//				itemSolicitacao.setUrgencia(urgencia);
 				itemSolicitacao.setSolicitado(false);
 				solicitacao.getItensSolicitacao().add(itemSolicitacao);
 			}

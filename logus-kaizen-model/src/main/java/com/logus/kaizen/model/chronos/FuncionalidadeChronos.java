@@ -11,13 +11,13 @@ import com.logus.core.model.aut.Funcionalidade;
 public class FuncionalidadeChronos extends Funcionalidade {
 
 	/**
-	 * Cadastro de togurus.
+	 * Cadastro de chronos.
 	 */
-	public static final FuncionalidadeChronos FUNC_TOGURU_CADASTRAR = create("FUNC_TOGURU_CADASTRAR","Cadastrar Chronos");
+	public static final FuncionalidadeChronos FUNC_CHRONOS_CADASTRAR = create("FUNC_CHRONOS_CADASTRAR","Cadastrar Chronos");
 	/**
-	 * Consulta de togurus.
+	 * Consulta de chronos.
 	 */
-	public static final FuncionalidadeChronos FUNC_TOGURU_CONSULTAR = create("FUNC_TOGURU_CONSULTAR","Consultar Chronos");
+	public static final FuncionalidadeChronos FUNC_CHRONOS_CONSULTAR = create("FUNC_CHRONOS_CONSULTAR","Consultar Chronos");
 
 	/**
 	 * Cria uma nova funcionalidade.

@@ -38,7 +38,7 @@ public class ChronosJpaDaoImpl extends AbstractJpaDao<Chronos> implements Chrono
 
 	@Override
 	public Collection<Chronos> loadTogurus() {
-		return loadCollection("*", TableNames.TB_TOGURU, "flg_ativo = ?", "seq_toguru desc", Boolean.TRUE);
+		return loadCollection("*", TableNames.TB_CHRONOS, "flg_ativo = ?", "seq_chronos desc", Boolean.TRUE);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class ChronosJpaDaoImpl extends AbstractJpaDao<Chronos> implements Chrono
 	 */
 	@Override
 	public String getTableName() {
-		return TableNames.TB_TOGURU;
+		return TableNames.TB_CHRONOS;
 	}
 
 	/*
@@ -75,7 +75,7 @@ public class ChronosJpaDaoImpl extends AbstractJpaDao<Chronos> implements Chrono
 	 */
 	@Override
 	protected boolean updateEnabled() {
-		return LoginManager.getAccessControl().hasAccess(FuncionalidadeChronos.FUNC_TOGURU_CADASTRAR.getId());
+		return LoginManager.getAccessControl().hasAccess(FuncionalidadeChronos.FUNC_CHRONOS_CADASTRAR.getId());
 	}
 
 	/*
@@ -85,18 +85,18 @@ public class ChronosJpaDaoImpl extends AbstractJpaDao<Chronos> implements Chrono
 	 */
 	@Override
 	protected boolean queryEnabled() {
-		return LoginManager.getAccessControl().hasAccess(FuncionalidadeChronos.FUNC_TOGURU_CONSULTAR.getId());
+		return LoginManager.getAccessControl().hasAccess(FuncionalidadeChronos.FUNC_CHRONOS_CONSULTAR.getId());
 	}
 
 	@Override
 	public Collection<Chronos> loadTogurusOrdenadoPorInicio() {
-		return loadCollection("*", TableNames.TB_TOGURU, "flg_ativo = ?", "dat_inicio desc", Boolean.TRUE);
+		return loadCollection("*", TableNames.TB_CHRONOS, "flg_ativo = ?", "dat_inicio desc", Boolean.TRUE);
 	}
 
 	@Override
 	public Chronos loadUltimoToguruDoResponsavel(Atendimento atendimentoOrigem, String codigoUsuario) {
 		Chronos toguru = null;
-		Collection<Chronos> collection = loadCollection("*", TableNames.TB_TOGURU,
+		Collection<Chronos> collection = loadCollection("*", TableNames.TB_CHRONOS,
 				"cod_responsavel = ? and seq_atendimento = ?", "dat_inicio desc", codigoUsuario,
 				atendimentoOrigem.getId());
 		Object[] array = collection.toArray();

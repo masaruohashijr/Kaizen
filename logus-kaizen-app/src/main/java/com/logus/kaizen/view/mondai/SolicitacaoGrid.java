@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.logus.core.model.aut.login.LoginManager;
 import com.logus.core.model.translation.TM;
 import com.logus.core.model.util.Formats;
@@ -45,7 +43,7 @@ public class SolicitacaoGrid extends BeanGrid<Solicitacao> {
 	private static final long serialVersionUID = -5792111538275287597L;
 	private String codigoUsuario;
 	private Atendimento atendimentoOrigem;
-	private Chronos toguruAtual;
+	private Chronos chronosAtual;
 	private KotaeConfiguracao configuracao;
 	private HashSet<Button> botoes = new HashSet<>();
 	private HashMap<String, Button> mapaBotoes = new HashMap<String, Button>();
@@ -67,11 +65,11 @@ public class SolicitacaoGrid extends BeanGrid<Solicitacao> {
 			}
 		}
 		if (null != configuracao) {
-			toguruAtual = new Chronos();
-			toguruAtual.setConfiguracao(configuracao);
-			AbstractAtribuicaoPassoItem primeiroAtendimento = ProcessoUtil.getPrimeiroAtendimento(toguruAtual);
+			chronosAtual = new Chronos();
+			chronosAtual.setConfiguracao(configuracao);
+			AbstractAtribuicaoPassoItem primeiroAtendimento = ProcessoUtil.getPrimeiroAtendimento(chronosAtual);
 			atendimentoOrigem = ((Passo) primeiroAtendimento).getAtendimentoOrigem();
-			toguruAtual = ApoioDataService.get().getToguruDao().loadUltimoToguruDoResponsavel(atendimentoOrigem,
+			chronosAtual = ApoioDataService.get().getToguruDao().loadUltimoToguruDoResponsavel(atendimentoOrigem,
 					codigoUsuario);
 		}
 		addColumn(Solicitacao::getChaveMondai).setFlexGrow(0).setSortable(true)
@@ -104,8 +102,8 @@ public class SolicitacaoGrid extends BeanGrid<Solicitacao> {
 		mapaBotoes.put(item.getChaveMondai(), button);
 		button.setText("Início");
 		button.getElement().setAttribute("theme", "primary");
-		if (null != toguruAtual) {
-			Long id = toguruAtual.getSolicitacao().getId();
+		if (null != chronosAtual && null != chronosAtual.getSolicitacao()) {
+			Long id = chronosAtual.getSolicitacao().getId();
 			if (item.getId().equals(id)) {
 				button.setText("Término");
 				button.getElement().getStyle().set("backgroundColor", "red");
@@ -143,12 +141,30 @@ public class SolicitacaoGrid extends BeanGrid<Solicitacao> {
 					.loadConfiguracaoByTipo(TipoKotae.TOGURU);
 			configuracao = (KotaeConfiguracao) configuracoes.toArray()[0];
 		}
-		toguruAtual.setConfiguracao(configuracao);
-		AbstractAtribuicaoPassoItem primeiroAtendimento = ProcessoUtil.getPrimeiroAtendimento(toguruAtual);
-		Atendimento atendimentoDestino = ((Passo) primeiroAtendimento).getAtendimentoDestino();
-		toguruAtual.setAtendimento(atendimentoDestino);
-		toguruAtual.setDataFim(new Date(System.currentTimeMillis()));
-		ApoioDataService.get().getToguruDao().update(toguruAtual);
+		if(null == chronosAtual) {
+			chronosAtual = new Chronos();
+		}
+		chronosAtual.setConfiguracao(configuracao);
+		if (codigoUsuario == null) {
+			codigoUsuario = LoginManager.getAccessControl().getUser().getCodigo();
+			chronosAtual.codigoResponsavel(codigoUsuario);
+		}
+		Collection<Chronos> chronosAbertosResponsavel = ApoioDataService.get().geToguruDao()
+				.loadTogurusByResponsavel(codigoUsuario);
+		AbstractAtribuicaoPassoItem ultimaAtribuicaoPassoItem = ProcessoUtil.getUltimoPassoItem(chronosAtual);
+		Passo ultimoPasso = null;
+		if(ultimaAtribuicaoPassoItem instanceof Passo) {
+			ultimoPasso = (Passo) ultimaAtribuicaoPassoItem;
+		} else {
+			ultimoPasso = ultimaAtribuicaoPassoItem.getPasso();
+		}
+		for (Chronos chronos : chronosAbertosResponsavel) {
+			if (!chronos.getAtendimento().equals(ultimoPasso.getAtendimentoDestino())) {
+				chronos.setDataFim(new Date(System.currentTimeMillis()));
+				chronos.setAtendimento(ultimoPasso.getAtendimentoDestino());
+				ApoioDataService.get().getToguruDao().update(chronos);
+			}
+		}
 		NotificationDialog.showInfo(TM.translate(KaizenTranslator.CHRONOS_TERMINADO),
 				"Atividade em " + item.getChaveMondai() + " concluída.");
 	}

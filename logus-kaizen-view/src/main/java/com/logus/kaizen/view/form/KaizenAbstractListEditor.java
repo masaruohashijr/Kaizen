@@ -1,4 +1,4 @@
-package com.logus.kaizen.view.list;
+package com.logus.kaizen.view.form;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
@@ -20,11 +20,13 @@ import com.logus.core.view.exceptions.ExceptionHandler;
 import com.logus.core.view.form.BeanForm;
 import com.logus.core.view.form.FormLayoutUtil;
 import com.logus.core.view.list.BeanGrid;
+import com.logus.core.view.list.EditWindow;
 import com.logus.core.view.list.ListEditorButton;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
@@ -235,7 +237,7 @@ public abstract class KaizenAbstractListEditor<T extends Object> extends Vertica
 		copyButton.setEnabled(selected != null && !isReadOnly());
 		insertButton.setEnabled(!isReadOnly());
 		viewButton.setEnabled(selected != null);
-//		filterButton.setEnabled(true);
+		filterButton.setEnabled(true);
 	}
 
 	/**
@@ -341,9 +343,21 @@ public abstract class KaizenAbstractListEditor<T extends Object> extends Vertica
 	 */
 	private Component createAdvancedFilterButton() {
 		return filterButton = ListEditorButton.createButton(ListEditorButtonType.FILTER,
-				() -> notification("A ser implementado..."));
+				() -> advancedFilter(createObject(), "Filtrar ", filterButton));
 
 	}
+
+	protected void advancedFilter(T object, String caption,
+            final Focusable<?> toFocus) {
+		final Dialog window = new EditWindow<T>(caption, createFilterForm(object, grid),
+											 confirmButtonType, false,
+											 editWindowWidth, editWindowHeight) {
+
+		};
+		window.open();
+	}
+
+	protected abstract BeanForm<T> createFilterForm(T object, BeanGrid<T> grid);
 
 	/**
 	 * Cria o botão de inclusão.

@@ -13,11 +13,11 @@ public class FuncionalidadePlano extends Funcionalidade {
 	/**
 	 * Cadastro de planos de integração de builds.
 	 */
-	public static final FuncionalidadePlano FUNC_PLANO_CADASTRAR = create("FUNC_TOGURU_CADASTRAR","Cadastrar Plano de Integração de Builds");
+	public static final FuncionalidadePlano FUNC_PLANO_CADASTRAR = create("FUNC_CHRONOS_CADASTRAR","Cadastrar Plano de Integração de Builds");
 	/**
 	 * Consulta de planos de integração de builds.
 	 */
-	public static final FuncionalidadePlano FUNC_PLANO_CONSULTAR = create("FUNC_TOGURU_CONSULTAR","Consultar Plano de Integração de Builds");
+	public static final FuncionalidadePlano FUNC_PLANO_CONSULTAR = create("FUNC_CHRONOS_CONSULTAR","Consultar Plano de Integração de Builds");
 
 	/**
 	 * Cria uma nova funcionalidade.
